@@ -1,11 +1,10 @@
-﻿/*
+/*
 4-NOV
 Changes version v07:
 UPDATE/DELETE CASCADE of FKs pointing MafIf
 
 24-OCT-2017
 In this version
-a) The table molecules TODO (Rename as materials)
 a.1) Has a new field: stechiometry
 a.2) In the formula field the atoms are stored in alphabetical order, even if the user has input it in another order
 
@@ -60,7 +59,8 @@ set search_path to public;
 create table atoms(
 	symbol varchar(2) primary key
 );
-insert into atoms values ('Fe'), ('Ge'), ('Ni'), ('Sn');
+
+INSERT INTO atoms VALUES ('Al'), ('Co'), ('Fe'), ('Ge'), ('Ni'), ('Mn'), ('Sb'), ('Sn'), ('Ta');
 
 create table molecules( --Co2P1, Co4P2 & Co0.67P0.33 are considered different material formulas
 	formula 	varchar(20) primary key, 	--The formula elements are stored in alphabetical order
