@@ -1,0 +1,1 @@
+# NOVAMAG-JSON-Loader

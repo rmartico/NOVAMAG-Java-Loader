@@ -1,0 +1,81 @@
+2017-11-04 18:51:20.085 [main] INFO  json_loader.utils.ConnectionPool - Comienzo Ejecución
+2017-11-04 18:51:20.509 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.542 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.672 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.698 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.702 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.772 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.774 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.786 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:20.786 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.787 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:20.808 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.811 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:20.812 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.812 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:20.819 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.820 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.828 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.837 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.839 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.859 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.860 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:20.860 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.860 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:20.867 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.869 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.878 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.887 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.889 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.909 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.910 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:20.910 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.910 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:20.917 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.918 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.924 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.932 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.933 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.955 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.955 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:20.956 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.956 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:20.963 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:20.965 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:20.970 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.978 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.979 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.998 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:20.999 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:21.000 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.003 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:21.010 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:21.012 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:21.016 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.023 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.025 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.044 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.045 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:21.046 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.046 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:21.053 [main] INFO  json_loader.utils.ConnectionPool - Autocommit activated=false
+2017-11-04 18:51:21.055 [main] INFO  json_loader.utils.ConnectionPool - Activacion de Autocommit=false
+Nivel de Aislamiento=TRANSACTION_READ_COMMITTED
+2017-11-04 18:51:21.060 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.066 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.067 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.086 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.087 [main] INFO  json_loader.utils.ConnectionPool - Resultset closed OK
+2017-11-04 18:51:21.087 [main] INFO  json_loader.utils.ConnectionPool - Statement closed OK
+2017-11-04 18:51:21.088 [main] INFO  json_loader.utils.ConnectionPool - Connection closed OK
+2017-11-04 18:51:21.089 [main] INFO  json_loader.utils.ConnectionPool - ---------------------------------------------------
+2017-11-04 18:51:21.090 [main] INFO  json_loader.utils.ConnectionPool - The file data_for_tests\loader\FeTa.zip was successfully loaded.
+2017-11-04 18:51:21.090 [main] INFO  json_loader.utils.ConnectionPool - 7 items loaded
+2017-11-04 18:51:21.090 [main] INFO  json_loader.utils.ConnectionPool - ---------------------------------------------------

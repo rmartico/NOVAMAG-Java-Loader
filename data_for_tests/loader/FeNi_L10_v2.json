@@ -1,0 +1,344 @@
+[
+ {
+  "name": "Item of novamag database",
+  "properties": {
+    "approach": {
+      "description": "information about the used approach",
+      "type": "string",
+      "mandatory": true,
+      "value": "theory"
+    },
+    "summary": {
+      "description": "short list of main calculated or meassured properties and production method. This is like a keyword entry",
+      "type": "string",
+      "mandatory": true,
+      "value": "AGA, crystal, energy, magnetization, anisotropy, exchange, Tc, domain wall width, exchange stiffness"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "description": "composition description of the compound in the calculated or measured unit cell",
+        "type": "string",
+        "mandatory": true,
+        "value": "Fe1Ni1"
+      },
+      "production info": {
+        "description": "information about how the material was made or theoretically obtained/predicted",
+        "type": "string",
+        "mandatory": false,
+        "value": "obtained by Adaptive Genetic Algorithm,  software USPEX+VASP"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "description": "number identifying the space group in 3d",
+        "type": "number",
+        "mandatory": false,
+        "value": 123,
+        "units": null
+      },
+      "unit cell volume": {
+        "description": "volume of the unit cell",
+        "type": "number",
+        "mandatory": false,
+        "value": 22.7138,
+        "units": "Angstrom^3"
+      },
+      "lattice parameters": {
+        "description": "lattice parameters of the unit cell (a,b,c)",
+        "type": "array",
+        "mandatory": false,
+        "value": [
+          2.518,
+          2.518,
+          3.582
+        ],
+        "units": "Angstrom"
+      },
+      "lattice angles": {
+        "description": "angles between lattice vectors",
+        "type": "array",
+        "mandatory": false,
+        "value": [
+          90.000,
+          90.000,
+          90.000
+        ],
+        "units": "º"
+      },
+      "atomic positions": {
+        "description": "atomic positions in the unit cell",
+        "type": "array",
+        "mandatory": false,
+        "value": [
+          "Fe1",
+          0.0,
+          0.0,
+          0.0,
+          "Ni1",
+          0.5,
+          0.5,
+          0.5
+        ],
+        "units": "fractional coordinates"
+      },
+      "crystal info": {
+        "description": "information about how the crystal structure was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "description": "total ab initio energy of the unit cell",
+        "type": "number",
+        "mandatory": false,
+        "value": -13.892258,
+        "units": "eV"
+      },
+      "unit cell formation enthalpy": {
+        "description": "formation enthalpy per unit cell",
+        "type": "number",
+        "mandatory": false,
+        "value": -0.135758,
+        "units": "eV"
+      },
+      "energy info": {
+        "description": "here the description",
+        "type": "string",
+        "mandatory": false,
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar,temperature=0K",
+        "units": null
+      },
+      "interatomic potentials info": {
+        "description": "information about how the interatomic potentials were developed",
+        "type": "string",
+        "mandatory": false,
+        "value": "https://www.ctcms.nist.gov/potentials/Fe-Ni.html",
+        "units": null
+      },
+      "magnetic free energy": {
+        "description": "magnetic free energy in units of eV",
+        "type": "number",
+        "mandatory": false,
+        "value": -13.892258,
+        "units": "eV"
+      },
+      "magnetic free energy info": {
+        "description": "information about how the magnetic free energy was calculated",
+        "type": "string",
+        "mandatory": false,
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar, temperature=0K",
+        "units": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "description": "the total spin polarization of the cell",
+        "type": "number",
+        "mandatory": false,
+        "value": 3.33,
+        "units": "Bohr magneton"
+      },
+      "atomic spin specie": {
+        "description": "magnetization per atom of each specie ",
+        "type": "array",
+        "mandatory": false,
+        "value": ["Fe1",2.659,"Ni1",0.671],
+        "units": "Bohr magneton per atom"
+      },
+      "saturation magnetization": {
+        "description": "unit cell spin polarization/unit cell volume",
+        "type": "number",
+        "mandatory": false,
+        "value": 1.71,
+        "units": "Tesla"
+      },
+      "magnetization temperature": {
+        "description": "temperature at which the magnetization is calculated or measured",
+        "type": "number",
+        "mandatory": false,
+        "value": 0.00,
+        "units": "Kelvin"
+      },
+      "magnetization info": {
+        "description": "information about how the magnetization was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar",
+        "units": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "description": "energy of unit cell when magnetization is constraint in some particular directions. Format=(mx,my,mz), energy magnitude",
+        "type": "array",
+        "mandatory": false,
+        "value": [0,0,1,-13.94019080,1,0,1,-13.94012990,1,0,0,-13.94008791,0,1,0,-13.94008803],
+        "units": "eV"
+      },
+      "anisotropy energy type": {
+        "description": "uniaxial or cubic anisotropy energy type",
+        "type": "string",
+        "mandatory": false,
+        "value": "uniaxial",
+        "units": null
+      },
+      "magnetocrystalline anisotropy constants": {
+        "description": "the magnetocrystalline anisotropy constants value",
+        "type": "array",
+        "mandatory": false,
+        "value": [0.73,0.00],
+        "units": "MegaJoule/meter^3"
+      },
+      "kind of anisotropy": {
+        "description": "depending on the value of the magnetocrystalline constants there are different kind of anisotropy",
+        "type": "string",
+        "mandatory": false,
+        "value": "easy axis",
+        "units": null
+      },
+	  "anisotropy info": {
+        "description": "information about how the magnetocrystalline anisotropy was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "software VASP, including spin-orbit coupling, 2816 k-points in IBZ, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar",
+        "units": null
+      },
+      "exchange integrals": {
+        "description": "exchange integrals, sorted by interatomic distance",
+        "type": "array",
+        "mandatory": false,
+        "value": ["Fe-Fe",2.22119,1.35194,0.38785,0.50683,-0.67064,-0.4195,"Ni-Ni",0.29772,-0.04463,0.04442,0.04059,-0.01808,-0.00461,"Fe-Ni",1.27737,0.08671,0.03079,-0.02957,0.01218,0.0091],
+        "units": "miliRydberg"
+      },
+      "exchange info": {
+        "description": "information about how exchange integrals were calculated",
+        "type": "string",
+        "mandatory": false,
+        "value": "software Fleur, spin spirals (Fourier transform), kmax=4.1 a.u., 1960 k-points and 463 q-points, PBE, Pressure=0.0 kbar",
+        "units": null
+      },
+      "magnetic order": {
+        "description": "type of magnetic order",
+        "type": "string",
+        "mandatory": false,
+        "value": "ferromagnet",
+        "units": null
+      },
+      "curie temperature": {
+        "description": "the Curie temperature in units of Kelvin",
+        "type": "number",
+        "mandatory": false,
+        "value": 800.00,
+        "units": "Kelvin"
+      },
+      "curie temperature info": {
+        "description": "information about how Curie temperature was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "software UppASD, Atomistic Spin Dynamics, system size 40x40x40 spins, periodic boundary conditions",
+        "units": null
+      },
+      "anisotropy field": {
+        "description": "the anisotropy field",
+        "type": "number",
+        "mandatory": false,
+        "value": 1.07,
+        "units": "Tesla"
+      },
+      "remanence": {
+        "description": "remanence",
+        "type": "number",
+        "mandatory": false,
+        "value": 1.42,
+        "units": "Tesla"
+      },
+      "coercivity": {
+        "description": "coercivity",
+        "type": "number",
+        "mandatory": false,
+        "value": 1.75,
+        "units": "Tesla"
+      },
+      "energy product": {
+        "description": "energy product",
+        "type": "number",
+        "mandatory": false,
+        "value": 352.23,
+        "units": "kiloJoule/meter^3"
+      },
+      "hysteresis info": {
+        "description": "information about how hysterisis properties (anisotropy field, remanence, coercivity and energy product) were calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "software OOMMF, Micromagnetics, bulk",
+        "units": null
+      },
+      "domain wall width": {
+        "description": "the domain wall width",
+        "type": "number",
+        "mandatory": false,
+        "value": 14.40,
+        "units": "nanometer"
+      },
+      "domain wall info": {
+        "description": "information about how domain wall width was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "Atomistic Spin Dynamics, system size 300x40x40 spins, temperature=5K",
+        "units": null
+      },
+      "exchange stiffness": {
+        "description": "exchange stiffness",
+        "type": "number",
+        "mandatory": false,
+        "value": 15.30,
+        "units": "picoJoule/meter"
+      },
+      "exchange stiffness info": {
+        "description": "information about how exchange stiffness was calculated or measured",
+        "type": "string",
+        "mandatory": false,
+        "value": "It was calculated using well-known formula where A is the exchange stiffness",
+        "units": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "description": "names or/and institutions which are the authors of these data",
+        "type": "array",
+        "mandatory": false,
+        "value": ["ICCRAM"],
+        "units": null
+      },
+      "reference": {
+        "description": "publications or links where these data can be found",
+        "type": "string",
+        "mandatory": false,
+        "value": null,
+        "units": null
+      },
+      "comments": {
+        "description": "additional information about these data, which was not mentioned above",
+        "type": "string",
+        "mandatory": false,
+        "value": null,
+        "units": null
+      },
+      "attached files": {
+        "description": "Crystallographic data (metadata format CIF, CONTCAR.vasp, ...), property values versus temperature, property values versus external magnetic field, interatomic potentials, figures, ...",
+        "type": "string",
+        "mandatory": false,
+        "value": null,
+        "units": null
+      },
+      "attached files info": {
+        "description": "short description of the attached files",
+        "type": "string",
+        "mandatory": false,
+        "value": null,
+        "units": null
+      }
+    }
+  }
+}
+]
