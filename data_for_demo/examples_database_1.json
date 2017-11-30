@@ -1,0 +1,1663 @@
+[
+{
+  "name": "novamag_theory_ICCRAM_Fe1Ni1_#123_1",
+  "properties": {
+    "approach": {
+      "value": "theory"
+    },
+    "summary": {
+      "value": "AGA, crystal, energy, magnetization, anisotropy, exchange, Tc, domain wall width, exchange stiffness"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe1Ni1"
+      },
+      "production info": {
+        "value": "obtained by Adaptive Genetic Algorithm,  software USPEX+VASP"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 123
+      },
+      "unit cell volume": {
+        "value": 22.7138
+      },
+      "lattice parameters": {
+        "value": [
+          2.518,
+          2.518,
+          3.582
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          90.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1(1a)",
+          0.0,
+          0.0,
+          0.0,
+          "Ni1(1d)",
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "crystal info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": -13.892258
+      },
+      "unit cell formation enthalpy": {
+        "value": -0.135758
+      },
+      "energy info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar,temperature=0K"
+      },
+      "interatomic potentials info": {
+        "value": "https://www.ctcms.nist.gov/potentials/Fe-Ni.html"
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": 3.33
+      },
+      "atomic spin specie": {
+        "value": ["1 Fe",2.659,"2 Ni",0.671]
+      },
+      "saturation magnetization": {
+        "value": 1.71
+      },
+      "magnetization temperature": {
+        "value": 0.00
+      },
+      "magnetization info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar"
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": [0,0,1,-13.94019080,1,0,1,-13.94012990,1,0,0,-13.94008791,0,1,0,-13.94008803]
+      },
+      "anisotropy energy type": {
+        "value": "uniaxial"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": [0.73,0.00]
+      },
+      "kind of anisotropy": {
+        "value": "easy axis"
+      },
+      "anisotropy info": {
+        "value": "software VASP, including spin-orbit coupling, 2816 k-points in IBZ, Ecut-off=400 eV, PAW_PBE, Fe_pv:PAW_PBE:06Sep2000, Ni_pv:PAW_PBE:06Sep2000, Pressure=0.0 kbar"
+      },
+      "exchange integrals": {
+        "value": ["Fe-Fe",2.22119,1.35194,0.38785,0.50683,-0.67064,-0.4195,"Ni-Ni",0.29772,-0.04463,0.04442,0.04059,-0.01808,-0.00461,"Fe-Ni",1.27737,0.08671,0.03079,-0.02957,0.01218,0.0091]
+      },
+      "exchange info": {
+        "value": "software Fleur, spin spirals (Fourier transform), kmax=4.1 a.u., 1960 k-points and 463 q-points, PBE, Pressure=0.0 kbar"
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": 800.00
+      },
+      "curie temperature info": {
+        "value": "software UppASD, Atomistic Spin Dynamics, system size 40x40x40 spins, periodic boundary conditions"
+      },
+      "anisotropy field": {
+        "value": 1.07
+      },
+      "remanence": {
+        "value": 1.42
+      },
+      "coercivity": {
+        "value": 1.75
+      },
+      "energy product": {
+        "value": 352.23
+      },
+      "hysteresis info": {
+        "value": "software OOMMF, Micromagnetics, bulk"
+      },
+      "domain wall width": {
+        "value": 14.40
+      },
+      "domain wall info": {
+        "value": "Atomistic Spin Dynamics, system size 300x40x40 spins, temperature=5K"
+      },
+      "exchange stiffness": {
+        "value": 15.30
+      },
+      "exchange stiffness info": {
+        "value": "It was calculated using well-known formula where A is the exchange stiffness"
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["ICCRAM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": ["dummyPicture.jpg"]
+      },
+      "attached files info": {
+        "value": "Example picture that has nothing to do with this material (only for test purposes)"
+      }
+    }
+  }
+},
+{
+  "name": "novamag_theory_ICCRAM_Mn1Al1_#123_1",
+  "properties": {
+    "approach": {
+      "value": "theory"
+    },
+    "summary": {
+      "value": "AGA, crystal, energy, magnetization, anisotropy, exchange, Tc, domain wall width, exchange stiffness"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Mn1Al1"
+      },
+      "production info": {
+        "value": "obtained by Adaptive Genetic Algorithm,  software USPEX+VASP"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 123
+      },
+      "unit cell volume": {
+        "value": 26.358
+      },
+      "lattice parameters": {
+        "value": [
+          2.755,
+          2.755,
+          3.473
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          90.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Mn1(1a)",
+          0.0,
+          0.0,
+          0.0,
+          "Al1(1d)",
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "crystal info": {
+        "value": "software VASP, k-points mesh 15x15x12, Ecut-off=400 eV, PAW_PBE, Mn_pv:PAW_PBE:06Sep2000, Al:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": -13.258362
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": "software VASP, k-points mesh 15x15x12, Ecut-off=400 eV, PAW_PBE, Mn_pv:PAW_PBE:06Sep2000, Al:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      },
+      "interatomic potentials info": {
+        "value": "https://www.ctcms.nist.gov/potentials/Al-Mn-Pd.html"
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": 2.296
+      },
+      "atomic spin specie": {
+        "value": ["1 Mn",2.352,"2 Al",-0.056]
+      },
+      "saturation magnetization": {
+        "value": 1.01
+      },
+      "magnetization temperature": {
+        "value": 0.00
+      },
+      "magnetization info": {
+        "value": "software VASP, k-points mesh 15x15x12, Ecut-off=400 eV, PAW_PBE, Mn_pv:PAW_PBE:06Sep2000, Al:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": [0,0,1,-13.27359703,1,0,1,-13.27347226,1,0,0,-13.27334379]
+      },
+      "anisotropy energy type": {
+        "value": "uniaxial"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": [1.51,0.00]
+      },
+      "kind of anisotropy": {
+        "value": "easy axis"
+      },
+      "anisotropy info": {
+        "value": "software VASP, including spin-orbit coupling, 2816 k-points in IBZ, Ecut-off=400 eV, PAW_PBE, Mn_pv:PAW_PBE:06Sep2000, Al:PAW_PBE:06Sep2000,Pressure=0.0 kbar,temperature=0K"
+      },
+      "exchange integrals": {
+        "value": ["Mn-Mn",2.5542,1.53838,1.10922,-0.54833,0.38383,-0.13525,0.1214,0.11231,0.1122,"Al-Al",-0.03054,0.05352,-0.00119,"Mn-Al",0.0967,-0.06642,-0.06491,0.02344,0.02341]
+      },
+      "exchange info": {
+        "value": "software Fleur, spin spirals (Fourier transform), kmax=4.1 a.u., 1089 k-points and 441 q-points, PBE, Pressure=0.0 kbar"
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": 660
+      },
+      "curie temperature info": {
+        "value": "software UppASD, Atomistic Spin Dynamics, system size 40x40x40 spins, periodic boundary conditions,up to 5 nearest neighbors exchange interactions"
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": 9.2
+      },
+      "domain wall info": {
+        "value": "Atomistic Spin Dynamics, system size 300x40x40 spins, temperature=5K"
+      },
+      "exchange stiffness": {
+        "value": 12.95
+      },
+      "exchange stiffness info": {
+        "value": "Atomistic Spin Dynamics, system size 300x40x40 spins, temperature=5K"
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["ICCRAM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_theory_ICCRAM_Co1Fe4Ta1_#160_1",
+  "properties": {
+    "approach": {
+      "value": "theory"
+    },
+    "summary": {
+      "value": "AGA, crystal, energy, magnetization"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Co1Fe4Ta1"
+      },
+      "production info": {
+        "value": "obtained by Adaptive Genetic Algorithm,  software USPEX+VASP"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 160
+      },
+      "unit cell volume": {
+        "value": 74.360545
+      },
+      "lattice parameters": {
+        "value": [
+          4.72538,
+          4.72539,
+          4.72538
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          59.8527,
+          59.8528,
+          59.8528
+        ]
+      },
+      "atomic positions": {
+        "value": null
+      },
+      "crystal info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Co:02Aug2007, Fe_pv:PAW_PBE:02Aug2007, Ta_pv:07Sep2000 ,Pressure=0.0 kbar,temperature=0K"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": -52.5427
+      },
+      "unit cell formation enthalpy": {
+        "value": -0.1081
+      },
+      "energy info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Co:02Aug2007, Fe_pv:PAW_PBE:02Aug2007, Ta_pv:07Sep2000 ,Pressure=0.0 kbar,temperature=0K"
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": -52.5427
+      },
+      "magnetic free energy info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Co:02Aug2007, Fe_pv:PAW_PBE:02Aug2007, Ta_pv:07Sep2000 ,Pressure=0.0 kbar,temperature=0K"
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": 9.192
+      },
+      "atomic spin specie": {
+        "value": ["1 Co",1.124,"2 Fe",1.905,"3 Fe",1.790,"4 Fe",1.988,"5 Fe",2.688,"6 Ta",-0.456]
+      },
+      "saturation magnetization": {
+        "value": 1.44
+      },
+      "magnetization temperature": {
+        "value": 0.00
+      },
+      "magnetization info": {
+        "value": "software VASP, k-points mesh 16x16x11, Ecut-off=400 eV, PAW_PBE, Co:02Aug2007, Fe_pv:PAW_PBE:02Aug2007, Ta_pv:07Sep2000 ,Pressure=0.0 kbar,temperature=0K"
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": null
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": null
+      },
+      "curie temperature": {
+        "value": null
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["ICCRAM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe3Sn_#194_1",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe3Sn"
+      },
+      "production info": {
+        "value": "2 Solid State Reactions at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 112.3671
+      },
+      "lattice parameters": {
+        "value": [
+          5.4621,
+          5.4621,
+          4.3490
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8442,
+          0.6912,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": 1.33
+      },
+      "magnetization temperature": {
+        "value": 300.00
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "planar"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "planar easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": 747.15
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": 2.50
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe3Sn_#194_2",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe3Sn"
+      },
+      "production info": {
+        "value": "Mechanical alloying + heat treatment 800ºC, 48 hours"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 112.4873
+      },
+      "lattice parameters": {
+        "value": [
+          5.4637,
+          5.4637,
+          4.3511
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8552,
+          0.6923,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": 1.22
+      },
+      "magnetization temperature": {
+        "value": 300.00
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "planar"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "planar easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": 745.85
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe9Mn3Sn3Sb1_#194_1",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe9Mn3Sn3Sb1"
+      },
+      "production info": {
+        "value": "2 Solid State Reactions at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 113.9464
+      },
+      "lattice parameters": {
+        "value": [
+          5.4858,
+          5.4858,
+          4.3721
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8442,
+          0.6912,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": null
+      },
+      "magnetization temperature": {
+        "value": null
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "planar"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "planar easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": null
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe9Mn3Sn3Sb1_#194_2",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe9Mn3Sn3Sb1"
+      },
+      "production info": {
+        "value": "2 Solid State Reactions at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 115.7108
+      },
+      "lattice parameters": {
+        "value": [
+          5.4858,
+          5.4858,
+          4.4398
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8553,
+          0.6975,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": null
+      },
+      "magnetization temperature": {
+        "value": null
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "planar"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "planar easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": null
+      },
+      "curie temperature info": {
+        "value": 310.75
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe8Mn4Sn3Sb1_#194_1",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe8Mn4Sn3Sb1"
+      },
+      "production info": {
+        "value": "2 Solid State Reactions at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 114.8200
+      },
+      "lattice parameters": {
+        "value": [
+          5.5000,
+          5.5000,
+          4.3829
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8442,
+          0.6912,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": null
+      },
+      "magnetization temperature": {
+        "value": null
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "planar"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "planar easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": null
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe6Mn6Sn3Sb1_#194_1",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe6Mn6Sn3Sb1"
+      },
+      "production info": {
+        "value": "2 Solid State Reactions at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 114.8200
+      },
+      "lattice parameters": {
+        "value": [
+          5.5338,
+          5.5338,
+          4.4270
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8789,
+          0.6973,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": null
+      },
+      "magnetization temperature": {
+        "value": null
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "uniaxial"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": 404.45
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": 1.00
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+},
+{
+  "name": "novamag_experiment_BCM_Fe15Mn15Sn9Sb1_#194_1",
+  "properties": {
+    "approach": {
+      "value": "experiment"
+    },
+    "summary": {
+      "value": "synthesis conditions; experimental crystallographic information: space group, lattice parameters, atomic positions, conditions for (XRD) measurement; experimental magnetic information: kind of anisotropy, curie temperature, saturation magnetization, anisotropy field, coercivity"
+    },
+    "chemistry": {
+      "chemical formula": {
+        "value": "Fe15Mn15Sn9Sb1"
+      },
+      "production info": {
+        "value": "1 Solid State Reaction at 800ºC, for 48h"
+      }
+    },
+    "crystal": {
+      "compound space group": {
+        "value": 194
+      },
+      "unit cell volume": {
+        "value": 118.7741
+      },
+      "lattice parameters": {
+        "value": [
+          5.5545,
+          5.5545,
+          4.4453
+        ]
+      },
+      "lattice angles": {
+        "value": [
+          90.000,
+          90.000,
+          120.000
+        ]
+      },
+      "atomic positions": {
+        "value": [
+          "Fe1",
+          0.8442,
+          0.6912,
+          0.2500,
+          "Sn1",
+          0.3333,
+          0.6666,
+          0.2500
+        ]
+      },
+      "crystal info": {
+        "value": "Conditions for (XRD) measurement: room temperature, atmospheric pressure, Cu-K alpha radiation"
+      }
+    },
+    "thermodynamics": {
+      "unit cell energy": {
+        "value": null
+      },
+      "unit cell formation enthalpy": {
+        "value": null
+      },
+      "energy info": {
+        "value": null
+      },
+      "interatomic potentials info": {
+        "value": null
+      },
+      "magnetic free energy": {
+        "value": null
+      },
+      "magnetic free energy info": {
+        "value": null
+      }
+    },
+    "magnetics": {
+      "unit cell spin polarization": {
+        "value": null
+      },
+      "atomic spin specie": {
+        "value": null
+      },
+      "saturation magnetization": {
+        "value": null
+      },
+      "magnetization temperature": {
+        "value": null
+      },
+      "magnetization info": {
+        "value": null
+      },
+      "magnetocrystalline anisotropy energy": {
+        "value": null
+      },
+      "anisotropy energy type": {
+        "value": "uniaxial"
+      },
+      "magnetocrystalline anisotropy constants": {
+        "value": null
+      },
+      "kind of anisotropy": {
+        "value": "easy axis"
+      },
+      "anisotropy info": {
+        "value": null
+      },
+      "exchange integrals": {
+        "value": null
+      },
+      "exchange info": {
+        "value": null
+      },
+      "magnetic order": {
+        "value": "ferromagnet"
+      },
+      "curie temperature": {
+        "value": null
+      },
+      "curie temperature info": {
+        "value": null
+      },
+      "anisotropy field": {
+        "value": null
+      },
+      "remanence": {
+        "value": null
+      },
+      "coercivity": {
+        "value": null
+      },
+      "energy product": {
+        "value": null
+      },
+      "hysteresis info": {
+        "value": null
+      },
+      "domain wall width": {
+        "value": null
+      },
+      "domain wall info": {
+        "value": null
+      },
+      "exchange stiffness": {
+        "value": null
+      },
+      "exchange stiffness info": {
+        "value": null
+      }
+    },
+    "additional information": {
+      "authors": {
+        "value": ["BCM"]
+      },
+      "reference": {
+        "value": null
+      },
+      "comments": {
+        "value": null
+      },
+      "attached files": {
+        "value": null
+      },
+      "attached files info": {
+        "value": null
+      }
+    }
+  }
+}
+]
