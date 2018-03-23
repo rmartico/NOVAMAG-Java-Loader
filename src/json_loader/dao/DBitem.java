@@ -28,6 +28,7 @@ public class DBitem {
 	 
 	private static Logger l = null;	
 	
+	private boolean m_confidential;
 	private String  m_name;
 	
 	private String 	m_type;	
@@ -135,7 +136,7 @@ public class DBitem {
 			
 			ins_item = con.prepareStatement(
 					"INSERT INTO items ("+	
-							"type, name, summary, formula,"+ 
+							"confidential, type, name, summary, formula,"+ 
 							"production_info,"+
 							"compound_space_group, unit_cell_volume, lattice_parameters, lattice_angles,"+ 
 								"atomic_positions,"+ 
@@ -148,7 +149,7 @@ public class DBitem {
 								"hysteresis_info, domain_wall_width, domain_wall_info, exchange_stiffness, exchange_stiffness_info,"+
 							"reference, comments"+
 							") values ("
-							+ "?,?,?,?,"
+							+ "?,?,?,?,?,"
 							+ "?,"
 							+ "?,?,cast( ? as json),cast (? as json),"
 							+ "cast(? as json),"
@@ -163,56 +164,58 @@ public class DBitem {
 							+ ");"
 							, Statement.RETURN_GENERATED_KEYS);
 			
-			ins_item.setString(1, getType());
-			ins_item.setString(2, getName());
-			ins_item.setString(3, getSummary());
-			ins_item.setString(4, getFormula());
+			int idx=1;
+			ins_item.setBoolean(idx++, getConfidential());
+			ins_item.setString(idx++, getType());
+			ins_item.setString(idx++, getName());
+			ins_item.setString(idx++, getSummary());
+			ins_item.setString(idx++, getFormula());
 			
-			ins_item.setString(5, getProduction_info());
+			ins_item.setString(idx++, getProduction_info());
 			
-			ins_item.setInt(6, getCompound_space_group());
-			ins_item.setBigDecimal(7, getUnit_cell_volume());
-			setJSONArray(ins_item, 8, getLattice_parameters());
-			setJSONArray(ins_item, 9, getLattice_angles());
+			ins_item.setInt(idx++, getCompound_space_group());
+			ins_item.setBigDecimal(idx++, getUnit_cell_volume());
+			setJSONArray(ins_item, idx++, getLattice_parameters());
+			setJSONArray(ins_item, idx++, getLattice_angles());
 			
-			setJSONArray(ins_item, 10, getAtomic_positions());
-			ins_item.setString(11, getCrystal_info());
+			setJSONArray(ins_item, idx++, getAtomic_positions());
+			ins_item.setString(idx++, getCrystal_info());
 			
-			ins_item.setBigDecimal(12, getUnitCellEnergy());
-			ins_item.setBigDecimal(13, getUnit_cell_formation_enthalpy());
-			ins_item.setString(14, getEnergy_info());
+			ins_item.setBigDecimal(idx++, getUnitCellEnergy());
+			ins_item.setBigDecimal(idx++, getUnit_cell_formation_enthalpy());
+			ins_item.setString(idx++, getEnergy_info());
 
-			ins_item.setBigDecimal(15, getUnit_cell_spin_polarization());
-			setJSONArray(ins_item, 16, getAtomic_spin_specie());
-			ins_item.setBigDecimal(17, getSaturation_magnetization());
-			ins_item.setBigDecimal(18, getMagnetization_temperature());
-			ins_item.setString(19, getMagnetization_info());
+			ins_item.setBigDecimal(idx++, getUnit_cell_spin_polarization());
+			setJSONArray(ins_item, idx++, getAtomic_spin_specie());
+			ins_item.setBigDecimal(idx++, getSaturation_magnetization());
+			ins_item.setBigDecimal(idx++, getMagnetization_temperature());
+			ins_item.setString(idx++, getMagnetization_info());
 			
-			setJSONArray(ins_item, 20, getMagnetocrystalline_anisotropy_energy());
-			ins_item.setString(21, getAnisotropy_energy_type());
-			setJSONArray(ins_item, 22, getMagnetocrystalline_anisotropy_constants());
-			ins_item.setString(23, getKind_of_anisotropy());
-			ins_item.setBigDecimal(24, getAnisotropy_field());
-			ins_item.setString(25, getAnisotropy_info());
+			setJSONArray(ins_item, idx++, getMagnetocrystalline_anisotropy_energy());
+			ins_item.setString(idx++, getAnisotropy_energy_type());
+			setJSONArray(ins_item, idx++, getMagnetocrystalline_anisotropy_constants());
+			ins_item.setString(idx++, getKind_of_anisotropy());
+			ins_item.setBigDecimal(idx++, getAnisotropy_field());
+			ins_item.setString(idx++, getAnisotropy_info());
 			
-			setJSONArray(ins_item, 26, getExchange_integrals());
+			setJSONArray(ins_item, idx++, getExchange_integrals());
 			
-			ins_item.setString(27, getExchange_info());
-			ins_item.setString(28, getMagnetic_order());
-			ins_item.setBigDecimal(29, getCurie_temperature());
-			ins_item.setString(30, getCurie_temperature_info());
-			ins_item.setBigDecimal(31, getRemanence());
-			ins_item.setBigDecimal(32, getCoercivity());
-			ins_item.setBigDecimal(33, getEnergy_product());
+			ins_item.setString(idx++, getExchange_info());
+			ins_item.setString(idx++, getMagnetic_order());
+			ins_item.setBigDecimal(idx++, getCurie_temperature());
+			ins_item.setString(idx++, getCurie_temperature_info());
+			ins_item.setBigDecimal(idx++, getRemanence());
+			ins_item.setBigDecimal(idx++, getCoercivity());
+			ins_item.setBigDecimal(idx++, getEnergy_product());
 			
-			ins_item.setString(34, getHysteresis_info());
-			ins_item.setBigDecimal(35, getDomain_wall_width());
-			ins_item.setString(36, getDomain_wall_info());
-			ins_item.setBigDecimal(37, getExchange_stiffness());
-			ins_item.setString(38, getExchange_stiffness_info());
+			ins_item.setString(idx++, getHysteresis_info());
+			ins_item.setBigDecimal(idx++, getDomain_wall_width());
+			ins_item.setString(idx++, getDomain_wall_info());
+			ins_item.setBigDecimal(idx++, getExchange_stiffness());
+			ins_item.setString(idx++, getExchange_stiffness_info());
 			
-			ins_item.setString(39, getReference());
-			ins_item.setString(40, getComments());
+			ins_item.setString(idx++, getReference());
+			ins_item.setString(idx++, getComments());
 
 			
 			ins_item.executeUpdate();
@@ -249,6 +252,7 @@ public class DBitem {
 	public String toString(){
 		String s="";
 		
+		s+="m_confidential="+m_confidential+"\n";
 		s+="m_type="+m_type+"\n";
 		s+="m_name="+m_name+"\n";
 		s+="m_summary="+m_summary+"\n";
@@ -308,6 +312,10 @@ public class DBitem {
 		return s;
 	}
 	
+	public void setConfidential(boolean isConfidential) throws LoaderException{
+		m_confidential=isConfidential;
+	}	
+	
 	public void setType(String type) throws LoaderException{
 		switch (type){
 			case "theory":
@@ -321,6 +329,10 @@ public class DBitem {
 		}
 		
 		m_type=type;
+	}
+	
+	public boolean getConfidential(){
+		return m_confidential;
 	}
 	
 	public String getName(){

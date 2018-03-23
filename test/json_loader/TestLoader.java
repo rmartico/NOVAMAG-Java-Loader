@@ -530,4 +530,34 @@ public class TestLoader {
 		}		
 	}
 
+	@Test
+	public void testParseJSONfile_confidential() throws IOException, NamingException {
+		String file_name="data_for_tests/loader/examples_database_1confidential.json";
+		
+		Loader loader=new Loader();
+		int n = loader.parseFile(file_name);
+		
+		assertEquals(n,10);
+		
+		ConnectionPool p=null;
+		Connection con=null;
+		Statement st=null;
+		
+		try{
+			p = ConnectionPool.getInstance();
+			con = p.getConnection();			
+			st = con.createStatement();
+			
+			Comparators.assertEqualsResultSet("SELECT cast(mafId as varchar(10))||confidential||name"
+					+ " from items where confidential", 642124489L);
+						
+			
+		} catch (SQLException e){			
+			l.error(e.getMessage());
+		} finally {
+			p.close(st);
+			p.close(con);
+		}
+	}
+
 }

@@ -48,7 +48,7 @@ public class Loader {
 	}
 	
 	public Loader(){
-		l =	LoggerFactory.getLogger(ConnectionPool.class);
+		l =	LoggerFactory.getLogger(Loader.class);
 	}
 	
 	//Return the number of materials succesfully loaded
@@ -115,7 +115,9 @@ public class Loader {
 		
 		for(File f:paths) {
 			if (f.isDirectory()){
-				n+=processUnizipped(f.getAbsolutePath(),n);
+				System.out.println("BEGIN Directory: "+f.getAbsolutePath()+"\t n="+n);				
+				n=processUnizipped(f.getAbsolutePath(),n);
+				System.out.println("END Directory: "+f.getAbsolutePath()+"\t n="+n);
 			} else {
 				String inner_file_name = f.getAbsolutePath();
 				String extension = inner_file_name.substring(
@@ -123,7 +125,7 @@ public class Loader {
 				
 				//System.out.println(extension);
 				if (extension.equalsIgnoreCase("JSON")){
-					System.out.println(f.getAbsolutePath());
+					System.out.println(""+n+"\t"+f.getAbsolutePath());
 				
 					Loader l = new Loader();
 					n+=l.parseJSONfile(inner_file_name);

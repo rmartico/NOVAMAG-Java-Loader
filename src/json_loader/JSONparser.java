@@ -132,6 +132,14 @@ public class JSONparser {
 		JSONObject jsonContext, allProps = null;
 		
 		try {
+			
+			try{
+				item.setConfidential(obj.getJSONObject("confidential").getBoolean("value"));				
+			} catch (JSONException e){ //Confidential attribute is not there
+				l.info(e.getMessage());
+				item.setConfidential(false);
+			}
+			
 			item.setName(obj.getString("name"));
 			
 			allProps = obj.getJSONObject("properties");
