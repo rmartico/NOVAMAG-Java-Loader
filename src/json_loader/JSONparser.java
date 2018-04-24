@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -19,12 +18,28 @@ import json_loader.dao.DBitem;
 import json_loader.utils.Cleaner;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * 
+ * JSONparser.java
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class JSONparser {
 	
-	private static Logger l = null;	
+	private static Logger l = LoggerFactory.getLogger(JSONparser.class);
+	
+	/** The java object containing the item (i.e., material) that is being parsed at this moment*/
 	private DBitem item = null;
-	private List allAtoms = null; //TODO
-		
+	
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		/* 
 		File f = new File("data/FeNi_L10_v2.json");
@@ -105,28 +120,33 @@ public class JSONparser {
 		System.out.println("OK---------");
 	}
 	
-	public JSONparser() {
-		l =	LoggerFactory.getLogger(JSONparser.class);
-		
+	/**
+	 * Constructor for a parser of a json object
+	 */
+	public JSONparser() {		
 		item = new DBitem();
-	}
+	}	
 	
-	/*
-	public void parseSingleObject(Connection con, JSONObject obj){
-		
-		JSONparser jp = new JSONparser("data/");
-        jp.parseJSON(obj);
-        //System.out.println(jp.getItem());
-        DBitem item = jp.getItem();
-        item.insert(con, false);  
-		
-	}
-	*/
-	
+	/**
+	 * Getter for the java object containing the item (i.e., material)
+	 *  that is being parsed at this moment
+	 * 
+	 * @return such java object containing the item, typically when the json object
+	 * has been already parsed
+	 */
 	public DBitem getItem(){
 		return item;
 	}
 	
+	/**
+	 * 
+	 * It parses a json object containing the info corresponding to
+	 * one item (i.e., material).
+	 * It stores that info into a DBitem object
+	 * Therefore, it makes a transaltion of the material info from json to java object
+	 * 
+	 * @param obj the json object to be parsed
+	 */
 	public void parseJSON( JSONObject obj ){
 		
 		JSONObject jsonContext, allProps = null;
@@ -217,74 +237,4 @@ public class JSONparser {
 			l.error(sw.toString());
 		}
 	}
-	
-	/* TODO Move this code to the corresponding class
-	public void insert( JSONObject obj, ConnectionPool p ){
-		
-		Connection con=null;
-		PreparedStatement ins_material_features=null;
-		
-		try{
-			
-			
-			getMatId(obj, p);
-			
-			
-			
-			
-			/////////////////////////////
-			con = p.getConnection();
-			ins_material_features = con.prepareStatement(
-					"INSERT INTO dev.material_features ("
-					+ "type, summary, "
-					//Chemistry
-					+ "production_info,"
-					//Crystal
-					+ "compound_space_group, unit_cell_volume, "
-					+ "lattice_parameters, lattice_angles,"
-					+ "atomic_positions"		
-					+ ") values ("
-					+ "?, ?,"
-					//Chemistry
-					+ "?,"
-					//Crystal
-					+ "?, ?, ?, ?, ?"
-					+ ");"
-			);
-			ins_material_features.setString(1, m_type);
-			ins_material_features.setString(2, m_summary);
-			
-			//Chemistry
-			ins_material_features.setString(3, m_production_info);
-			
-			//Crystal
-			ins_material_features.setInt(4, m_compound_space_group);
-			ins_material_features.setBigDecimal(5, m_unit_cell_volume);
-			ins_material_features.setObject( 6, m_lattice_parameters );
-			ins_material_features.setObject( 7, m_lattice_angles );
-			ins_material_features.setObject( 8, m_atomic_positions );
-			
-			
-			ins_material_features.executeUpdate();
-			
-			
-			
-		} catch (Exception e){
-			l.error(e.getMessage());
-			
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			l.error(sw.toString());
-			
-			
-		} finally{
-			p.close(con);
-		}		
-		
-	}
-	*/
-	
-	
-
 }

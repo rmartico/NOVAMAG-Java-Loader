@@ -1,7 +1,5 @@
 package json_loader.dao;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,9 +9,6 @@ import java.sql.Statement;
 import javax.naming.NamingException;
 
 import org.json.JSONArray;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;

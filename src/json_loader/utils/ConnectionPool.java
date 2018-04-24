@@ -1,6 +1,5 @@
 package json_loader.utils;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,67 +11,87 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-//import org.postgresql.ds.PGConnectionPoolDataSource;
 import org.postgresql.ds.PGPoolingDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import json_loader.error_handling.PostgresTableError;
-import json_loader.error_handling.DBMSErrorUtil;
-
+/**
+ * ConnectionPool.java
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @author <a href="mailto:rmartico@ubu.es">Raúl Marticorena</a>
+ * @version 1.0
+ * @since 1.0 
+ */
+@SuppressWarnings("deprecation")
 public class ConnectionPool {	
 	
-	private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
 	private static final String USER = "postgres";
-	private static final String PASSWORD = "postgres";
-	
+	private static final String PASSWORD = "postgres";	
 	private static final String HOST = "localhost";
 	private static final String DATABASE = "postgres";
 	
-	private static final DBMSErrorUtil m_tableError = new PostgresTableError();
-	
 	private static ConnectionPool m_pool = null;
 	
-	private Context context = null;
 	private DataSource ds = null;		
 		
-	private static Logger l = null;	
-
-	private void setLogger() throws IOException {
-		if (l == null) {			
-			l =	LoggerFactory.getLogger(ConnectionPool.class);			
-			l.info("Comienzo Ejecución");			
-		}
-		return;
-	}
+	private static Logger l = LoggerFactory.getLogger(ConnectionPool.class);	
 	
+	/**
+	 * Main method: You can use it to rewrite the res/.bindings file
+	 * 	that contains the JNDI context with the pooled datasource configuration
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception{
 		rewriteConfiguration(); 
 		System.out.println("END--ConnectionPool");
 	}
 	
-	private ConnectionPool() throws NamingException, SQLException, IOException {			
-		setLogger();
-		
-		Properties properties = new Properties();
-		properties.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.fscontext.RefFSContextFactory");
-		properties.setProperty(Context.PROVIDER_URL, "file:./res");
+	/**
+	 * Private constructor for Singleton design pattern implementation
+	 * It uses JNDI to get the pool configuration
+	 */
+	private ConnectionPool() {			
 
-		Context context = new InitialContext(properties);
-
-		ds = (DataSource) context.lookup("jdbc/novamag");
-		
+		try {
+			Properties properties = new Properties();
+			properties.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+					"com.sun.jndi.fscontext.RefFSContextFactory");
+			properties.setProperty(Context.PROVIDER_URL, "file:./res");
+	
+			Context context = new InitialContext(properties);
+	
+			ds = (DataSource) context.lookup("jdbc/novamag");
+		} catch (NamingException e) {
+			l.error("FATAL: Can't find the JNDI resuorce for the connection pool");
+			l.error(e.getMessage());
+			
+			throw new RuntimeException();
+		}		
 		return;
 	}
-	
-	public static ConnectionPool getInstance() throws NamingException, SQLException, IOException{
+	/**
+	 * Connection pool factory that implements Singleton design pattern
+	 * It gets a connection pool instance if it doesn't exists yet
+	 * 
+	 * @return the connection pool instance
+	 */
+	public static ConnectionPool getInstance(){
 		if (m_pool==null){
 			m_pool = new ConnectionPool();
 		}
 		return m_pool;
 	}
 	
+	/**
+	 * 
+	 * Make rollback. It surrounds the rollback in a try-catch block
+	 * (to avoid a try-catch nested in catch block in methods implementing transactions)
+	 * 
+	 * @param conn is the connection where rollback is performed
+	 */
 	public void undo(Connection conn) {
 		if (conn != null) {
 			try {
@@ -84,6 +103,13 @@ public class ConnectionPool {
 		}
 	}
 	
+	/**
+	 * 
+	 * Close the connection. It surrounds the close statement in a try-catch block
+	 * (to avoid a try-catch nested in finally block in methods implementing transactions)
+	 * 
+	 * @param conn is the connection to close
+	 */
 	public void close(Connection conn) {
 		if (conn != null) {
 			try {
@@ -95,6 +121,13 @@ public class ConnectionPool {
 		}
 	}
 	
+	/**
+	 * 
+	 * Close a statement. It surrounds it in a try-catch block
+	 * (to avoid a try-catch nested in finally block in methods implementing transactions)
+	 * 
+	 * @param statement is the statement to close
+	 */
 	public void close(Statement statement) {
 		if (statement != null) {
 			try {
@@ -106,6 +139,13 @@ public class ConnectionPool {
 		}
 	}
 	
+	/**
+	 * 
+	 * Close a result set. It surrounds it in a try-catch block
+	 * (to avoid a try-catch nested in finally block in methods implementing transactions)
+	 * 
+	 * @param rs is the result set to close
+	 */
 	public void close(ResultSet rs) {
 		if (rs != null) {
 			try {
@@ -117,6 +157,13 @@ public class ConnectionPool {
 		}
 	}
 	
+	/**
+	 * 
+	 * It gets a connection from the connection pool
+	 * 
+	 * @return the new logical connection
+	 * @throws SQLException
+	 */
 	public Connection getConnection() throws SQLException{
 		
 		Connection conn=null;
@@ -138,11 +185,20 @@ public class ConnectionPool {
 		return conn;
 	}
 	
+	/**
+	 * 
+	 * It builds an string to be printed for debugging purposes
+	 * The string contains details on a given connection configuration 
+	 * 
+	 * @param conn is the connection which info is showed by the method
+	 * @return the string containing the configuration info
+	 * @throws SQLException
+	 */
 	public String traceConnectionSettings(Connection conn) throws SQLException{
 		
-		String retorno="Activacion de Autocommit="+ conn.getAutoCommit()+"\n";
+		String retorno="Autocommit activation="+ conn.getAutoCommit()+"\n";
 		
-		retorno += "Nivel de Aislamiento=";
+		retorno += "Isolation level=";
 		switch (conn.getTransactionIsolation()){
 		case Connection.TRANSACTION_NONE:
 			retorno += "TRANSACTION_NONE";
@@ -164,7 +220,13 @@ public class ConnectionPool {
 		return retorno;
 	}
 	
-	
+	/**
+	 * It changes the JNDI context where the connection pool configuration is recorded
+	 * At this version the new values comes from the private static final variables in the class 
+	 * 
+	 * @throws NamingException (probably) if the resource to rebind is not found
+	 * @throws SQLException
+	 */
 	static void rewriteConfiguration() throws NamingException, SQLException {
 		Properties properties = new Properties();
 		properties.setProperty(Context.INITIAL_CONTEXT_FACTORY,
@@ -184,22 +246,7 @@ public class ConnectionPool {
 		source.setPassword(PASSWORD);
 		source.setMaxConnections(10);
 		
-		
-		/*
-		PGConnectionPoolDataSource pds = null;
-		// Creación de un objeto DataSource		
-		pds = new PGConnectionPoolDataSource();
-
-		pds.setUrl(URL);
-		pds.setUser(USER);
-		pds.setPassword(PASSWORD);
-		
-		context.rebind("jdbc/novamag", pds);
-		*/
 		context.rebind("jdbc/novamag", source);
 	}	
-	
-	public DBMSErrorUtil getTableError(){
-		return m_tableError;
-	}
+
 }

@@ -7,8 +7,30 @@ import java.io.IOException;
 
 import json_loader.Config;
 
+/**
+ * FileManager.java
+ * 
+ * Class to:
+ * 	Copy files moving them to another directory
+ * 	Delete files, delete all files in directories and delete directories
+ *  Get the absolute path of a given file
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class FileManager {
 	
+	/**
+	 * Copy a file into a destination directory that is placed inside
+	 * the temp folder. The temp folder is used to unzip a zip file
+	 * containing several items (i.e., materials) 
+	 * 
+	 * @param filename is the file to be copied
+	 * @param dest is the relative path to the destination subdirectory
+	 * 	The file is copied in the path temp folder/destination directory
+	 * @throws IOException
+	 */
 	public static void copy(String filename, String dest) throws IOException{
 		File sourceFile = new File(filename);
         File destinationFile = new File(Config.TEMP_FOLDER+sourceFile.getName());
@@ -26,7 +48,12 @@ public class FileManager {
 		
 	}
 	
-	
+	/**
+	 * It deletes recursively all the files and subdirectories hanging on
+	 * the directory specified as argument
+	 * 
+	 * @param dir is the File object representing the directory to empty
+	 */
 	public static void purgeDirectory(File dir) {
 		File[] paths;
 		try{
@@ -43,17 +70,34 @@ public class FileManager {
 		}
 	}
 	
+	/**
+	 * It deletes recursively all the files and subdirectories hanging on
+	 * the directory specified as argument
+	 * 
+	 * @param dir is the string representing the path to the directory to empty
+	 */
 	public static void purgeDirectory(String dir) {
 		File file = new File(dir);
 		purgeDirectory(file);
 	}
 	
+	/**
+	 * Deletes a directory
+	 * 
+	 * @param dir is the string representing the path to the directory to delete
+	 */
 	public static void rmDir(String dir) {
 		File file = new File(dir);
 		if (file.isDirectory())
 			file.delete();
 	}
 	
+	/**
+	 * It returns the absolute file path given an string representing a path
+	 *  
+	 * @param filePath is the file path
+	 * @return the corresponding absolute path
+	 */
 	public static String getPath( String filePath){
 		File f = new File(filePath);
 		

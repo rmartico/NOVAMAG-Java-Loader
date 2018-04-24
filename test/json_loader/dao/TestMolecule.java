@@ -8,10 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import json_loader.error_handling.LoaderException;
 import json_loader.utils.Cleaner;
@@ -19,12 +16,6 @@ import json_loader.utils.ConnectionPool;
 
 public class TestMolecule {
 	static private ConnectionPool p;
-	private static Logger l = null;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		l =	LoggerFactory.getLogger(TestMolecule.class);
-	}	
 
 	@Before
 	public void setUp() throws Exception {

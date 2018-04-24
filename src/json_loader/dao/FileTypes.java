@@ -1,6 +1,5 @@
 package json_loader.dao;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,21 +9,33 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.naming.NamingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import json_loader.error_handling.LoaderException;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * FileTypes.java
+ *  Class to represent a java object containing the list of allowed file types
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class FileTypes {
-	private static Logger l = null;
+	private static Logger l = LoggerFactory.getLogger(FileTypes.class);
 	private static FileTypes m_fileTypes=null;
 	
 	TreeMap<String, FileType> m_listOfTypes;
 	
-
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws LoaderException
+	 */
 	public static void main(String[] args) throws LoaderException {
 		FileTypes fp = FileTypes.getInstance();
 		
@@ -51,6 +62,12 @@ public class FileTypes {
 
 	}
 	
+	/**
+	 * Factory of the class implementing the Singleton design pattern
+	 * 
+	 * @return the instance of FileTypes.
+	 * 		If there isn't still an instance, a new one is created
+	 */
 	public static FileTypes getInstance(){
 		if (m_fileTypes==null){
 			m_fileTypes = new FileTypes();
@@ -58,8 +75,11 @@ public class FileTypes {
 		return m_fileTypes;
 	}
 	
-	private FileTypes(){
-		l =	LoggerFactory.getLogger(FileTypes.class);
+	/**
+	 * Constructor of the class. Is queries the database getting the list
+	 * of allowed file types.
+	 */
+	private FileTypes(){		
 		
 		m_listOfTypes = new TreeMap<String, FileType>();
 		
@@ -86,7 +106,7 @@ public class FileTypes {
 			}
 			
 			con.commit();
-		} catch (SQLException | NamingException | IOException e) {
+		} catch (SQLException e) {
 			p.undo(con);
 			l.error(e.getMessage());
 			
@@ -97,6 +117,14 @@ public class FileTypes {
 		}
 	}	
 	
+	/**
+	 * 
+	 * It returns the FileType object that matches with the string in the argument
+	 * 
+	 * @param fileName is an String representing a file type
+	 * @return a FileType object representing this file type
+	 * @throws LoaderException when the file type is a not allowed one
+	 */
 	public FileType getFileType(String fileName) throws LoaderException{
 		FileType toReturn=null;
 		
@@ -125,6 +153,14 @@ public class FileTypes {
 		return toReturn;
 	}
 	
+	/**
+	 * 
+	 * Getter to know if the String representing a file type in the argument is
+	 *  a text file (e.g., cif, contcar) or not (e.g., png, jpeg)
+	 * 
+	 * @param fileTypeName
+	 * @return
+	 */
 	public boolean isText(String fileTypeName){
 		
 		FileType ft = m_listOfTypes.get(fileTypeName);

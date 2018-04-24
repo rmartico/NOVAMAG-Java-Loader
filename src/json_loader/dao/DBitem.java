@@ -17,6 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import json_loader.JSONparser;
 import json_loader.error_handling.LoaderException;
@@ -24,9 +25,19 @@ import json_loader.utils.Cleaner;
 import json_loader.utils.Comparators;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * 
+ * DBitem.java
+ * Class to represent a java object containing the information
+ * from an item (i.e., material)
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class DBitem {	
 	 
-	private static Logger l = null;	
+	private static Logger l = LoggerFactory.getLogger(DBitem.class);	
 	
 	private boolean m_confidential;
 	private String  m_name;
@@ -87,6 +98,15 @@ public class DBitem {
 	private JSONArray			m_attached_files;
 	private JSONArray			m_attached_files_info;
 	
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws IOException
+	 * @throws NamingException
+	 * @throws SQLException
+	 */
 	public static void main(String[] args) throws IOException, NamingException, SQLException {
 		 String fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_1.json";		
 		
@@ -112,6 +132,42 @@ public class DBitem {
          System.out.println("OK!!");
 	}
 	
+	/**
+	 * Prepares a a jsonarray to be set as one of the parameters
+	 * of a PreparedStatement.
+	 * The jsonArray is trated as an String
+	 * It takes into account the jsonArray could be null
+	 * 
+	 * @param pstm is the PreparedStatement
+	 * @param position is the index of the "?" symbol corresponding to the jsonArray in
+	 *    the preparedStatement
+	 * @param val is the jsonArray
+	 * @throws SQLException
+	 */
+	private void setJSONArray(
+			PreparedStatement pstm,
+			int position, JSONArray val ) throws SQLException{
+		if (val==null){
+			pstm.setNull(position, Types.VARCHAR);
+		} else{
+			pstm.setString(position, val.toString());
+		}
+			
+	}
+
+	/**
+	 * Given a database connection it uses it to insert a row
+	 * into the items table. This row contains the info in the DBitem object
+	 * It also inserts information in the associated tables
+	 * (i.e., molecules, authors & authoring, attachedFiles)
+	 * 
+	 * Typical usage: insert( null, true)
+	 * 
+	 * @param con the database connection, if null then a new one is created and also released
+	 * at the end of the method
+	 * @param doCommit if true commit is made at the end of the method
+	 * 
+	 */
 	public void insert(Connection con, boolean doCommit){
 		
 		ConnectionPool p = null;
@@ -237,7 +293,7 @@ public class DBitem {
 			if (doCommit)
 				con.commit();			
 			
-		} catch (NamingException | SQLException | IOException e) {
+		} catch ( SQLException e) {
 			l.error(e.getMessage());
 			//e.printStackTrace();
 		} finally {
@@ -249,6 +305,10 @@ public class DBitem {
 		
 	}
 	
+	/**
+	 * String representation of DBitem
+	 * (for debugging purposes)
+	 */
 	public String toString(){
 		String s="";
 		
@@ -312,10 +372,41 @@ public class DBitem {
 		return s;
 	}
 	
-	public void setConfidential(boolean isConfidential) throws LoaderException{
+	/**
+	 * getter for the boolean variable indicating if the item is 
+	 * confidential or public
+	 * 
+	 * @return true=>confidential, or false=>public	 * 
+	 */
+	public boolean getConfidential(){
+		return m_confidential;
+	}
+
+	/**
+	 * setter for the boolean variable indicating if the item is 
+	 * confidential or public
+	 * 
+	 * @param isConfidential true=>confidential, false=>public
+	 */
+	public void setConfidential(boolean isConfidential){
 		m_confidential=isConfidential;
 	}	
 	
+	/**
+	 * Getter for the variable indicating if the item is theoretical or experimental
+	 * @return E when experimental, T when theoretical
+	 */	
+	public String getType(){
+		return m_type;
+	}
+	
+	/**
+	 * 
+	 * Setter for the variable indicating if the item is theoretical or experimental
+	 * 
+	 * @param type = E when experimental, = T when theoretical
+	 * @throws LoaderException when other value different than E or T is tried to be set
+	 */
 	public void setType(String type) throws LoaderException{
 		switch (type){
 			case "theory":
@@ -331,46 +422,109 @@ public class DBitem {
 		m_type=type;
 	}
 	
-	public boolean getConfidential(){
-		return m_confidential;
-	}
-	
+	/**
+	 * Getter for the name of the item (i.e., material)
+	 * @return the name of the material
+	 */
 	public String getName(){
 		return m_name;
 	}
 	
+	/**
+	 * Setter for the name of the item (i.e., material)
+	 * @param name is the name of the material
+	 */
 	public void setName(String name){
 		m_name=name;
 	}
 	
-	public String getType(){
-		return m_type;
+	/**
+	 * Getter for the summary which is a text entry,
+	 *  it provides a short list of main calculated or measured
+	 *  properties and production method. This is like a keyword entry. 
+	 * 
+	 * @return the summary
+	 */
+	public String getSummary(){
+		return m_summary;
 	}
-	
+
+	/**
+	 * Setter for the summary which is a text entry,
+	 *  it provides a short list of main calculated or measured
+	 *  properties and production method. This is like a keyword entry. 
+	 * 
+	 * @param summary
+	 */
 	public void setSummary(String  summary){
 		m_summary=summary;
 	}
 	
-	public String getSummary(){
-		return m_summary;
-	}	
-	
+	/**
+	 * Getter for the chemical formula
+	 * 
+	 * composition description of the compound in the calculated or measured unit cell.
+	 * Important to note:
+	 *  -For theoretical approach: only integer numbers after the name of the elements. Example: N1Fe8
+     *  -For experimental approach: it could be integer or decimal numbers after the name of the elements. Examples: Fe3Sn1 or Fe0.75Sn0.25, Fe15Mn15Sn9Sb1 or Fe1.5Mn1.5Sn0.9Sb0.1, Fe200Mn100Sn75Sb25 or Fe2Mn1Sn0.75Sb0.25 
+	 * 
+	 * @return the chemical formula
+	 */
+	public String getFormula(){
+		return m_formula;
+	}
+
+	/**
+	 *
+	 * Setter for the chemical formula
+	 * 
+	 * composition description of the compound in the calculated or measured unit cell.
+	 * Important to note:
+	 *  -For theoretical approach: only integer numbers after the name of the elements. Example: N1Fe8
+     *  -For experimental approach: it could be integer or decimal numbers after the name of the elements. Examples: Fe3Sn1 or Fe0.75Sn0.25, Fe15Mn15Sn9Sb1 or Fe1.5Mn1.5Sn0.9Sb0.1, Fe200Mn100Sn75Sb25 or Fe2Mn1Sn0.75Sb0.25 
+	 * 
+	 * @param formula is the chemical formula
+	 */
 	public void setFormula(String formula){
 		m_formula = formula;
 	};
 	
-	public String getFormula(){
-		return m_formula;
+	/**
+	* Getter for the production information
+	* that provides information about how the material was made 
+	* (synthesis method, temperature, time, …) 
+	* or theoretically obtained/predicted (software, method, …).
+	* 
+	* @return the production information
+	*/
+	public String getProduction_info(){
+		return m_production_info;
 	}
-	
+
+	/**
+	 * Setter for the production information
+	 * that provides information about how the material was made 
+	 * (synthesis method, temperature, time, …) 
+	 * or theoretically obtained/predicted (software, method, …).
+	 * 
+	 * @param production_info
+	 */
 	public void setProduction_info(String production_info){
 		m_production_info = production_info;
 	}	
 	
-	public String getProduction_info(){
-		return m_production_info;
+	/**
+	 * Getter for the compound space group which ranges in [1-230]
+	 * @return the compound space group
+	 */
+	public Integer getCompound_space_group(){
+		return m_compound_space_group;
 	}
-	
+
+	/**
+	 * Setter for the compound space group which ranges in [1-230] 
+	 * @param compound_space_group
+	 */
 	public void setCompound_space_group( int compound_space_group){
 		if (compound_space_group<0)
 			m_compound_space_group=null;
@@ -378,18 +532,45 @@ public class DBitem {
 			m_compound_space_group = compound_space_group;
 	}
 	
-	public Integer getCompound_space_group(){
-		return m_compound_space_group;
+	/**
+	 *  Getter for the unit cell volume in units of Å3,
+	 *  [min,max]=[0.0000,100000.0000]
+	 * @return the unit cell volume
+	 */
+	public BigDecimal getUnit_cell_volume(){
+		return m_unit_cell_volume;
 	}
-	
+
+	/**
+	 *  Setter for the unit cell volume in units of Å3,
+	 *  [min,max]=[0.0000,100000.0000]
+	 * 
+	 * @param unit_cell_volume
+	 */
 	public void setUnit_cell_volume( BigDecimal unit_cell_volume){
 		m_unit_cell_volume = unit_cell_volume;
 	}
 	
-	public BigDecimal getUnit_cell_volume(){
-		return m_unit_cell_volume;
+	/**
+	 * Getter for the lattice parameters: (a,b,c) in units of Å,
+	 * [min,max]=[0.000000,100000.000000]
+	 * Example: [ 2.518, 2.518, 3.582]
+	 * 
+	 * @return a json array containing the lattice parameters
+	 */
+	public JSONArray getLattice_parameters(){
+		return m_lattice_parameters;
 	}
-		
+
+	/**
+	 * Setter for the lattice parameters: (a,b,c) in units of Å,
+	 * [min,max]=[0.000000,100000.000000]
+	 * Example: [ 2.518, 2.518, 3.582]
+	 * 
+	 * @param lattice_parameters is a json array containing the lattice parameters
+	 * @throws LoaderException if the number of lattice parameters is other than 3
+	 * 	or any of them is not numeric or is out of the [0.000000,100000.000000] range
+	 */
 	public void setLattice_parameters( JSONArray lattice_parameters ) throws LoaderException{
 		
 		//Check it is OK
@@ -408,21 +589,31 @@ public class DBitem {
 				jo.compareTo(new BigDecimal("100000")) > 0)
 				throw new LoaderException(LoaderException.LATTICE_PARAMETER_OUT_OF_RANGE);			
 		}		
-		
-		/*
-		PGobject lattice_parameters = new PGobject();
-		lattice_parameters.setType("json");
-		lattice_parameters.setValue(lp.toString());
-		item.setLattice_parameters(lattice_parameters);
-		*/
-		
+	
 		m_lattice_parameters = lattice_parameters;
 	}
 	
-	public JSONArray getLattice_parameters(){
-		return m_lattice_parameters;
+	/**
+	 * Getter for the lattice angles: (alpha, beta, gamma) in units of º,
+	 * [min,max]=[0.000,360.000]
+	 * Example: [ 90.000, 90.000, 90.000]
+	 * 
+	 * @return a json array containing the lattice angles
+	 */
+	public JSONArray getLattice_angles(){
+		return m_lattice_angles;
 	}
-		
+
+	/**
+	 * 
+	 * Setter for the lattice angles: (alpha, beta, gamma) in units of º,
+	 * [min,max]=[0.000,360.000]
+	 * Example: [ 90.000, 90.000, 90.000]
+	 *
+	 * @param lattice_angles is json array containing the lattice angles
+	 * @throws LoaderException if the number of lattice angles is other than 3
+	 * 	or any of them is not numeric or is out of the [0.000,360.000] range
+	 */
 	public void setLattice_angles( JSONArray lattice_angles) throws LoaderException{
 		//Check it is OK
 		if (!(lattice_angles.length()==3 || lattice_angles.length()==0))
@@ -451,51 +642,40 @@ public class DBitem {
 		m_lattice_angles = lattice_angles;
 	}
 	
-	public JSONArray getLattice_angles(){
-		return m_lattice_angles;
+	/**
+	 * Setter for the atomic positions
+	 *  Example: [ "Fe1(1a)", 0.0, 0.0, 0.0,
+     *     		   "Ni1(1d)", 0.5, 0.5, 0.5]
+	 * @return a json array containing the atomic positions
+	 */
+	public JSONArray getAtomic_positions(){
+		return m_atomic_positions;
 	}
-	
+
+	/**
+	 * Getter for the atomic positions
+	 *  Example: [ "Fe1(1a)", 0.0, 0.0, 0.0,
+     *     		   "Ni1(1d)", 0.5, 0.5, 0.5]
+     *     		   
+	 * @param atomic_positions is a json array containing the atomic positions
+	 * @throws LoaderException if one of the atomic positions is bigger than one
+	 * or is not numeric
+	 */
 	public void setAtomic_positions( JSONArray atomic_positions) throws LoaderException{
 		
 		if (atomic_positions==null){
 			m_atomic_positions=null;
 			return;
 		}
-		
-		//TODO
-		//Check it is OK --> These checks must be done after parsing the formula
-		/*
-		if (lp.length()==0)
-			throw new LoaderException(LoaderException.ATOMIC_POSITIONS_EMPTY);
-		if (lp.length()>m_numAtoms*4)
-			throw new LoaderException(LoaderException.MORE_ATOMIC_POSITIONS_THAN_ATOMS);				
-		*/
-		
-		//BigDecimal jo = null;
+	
 		for ( int i=0; i<atomic_positions.length(); i++){
 			if ( i % 4 == 0){
-				//String atom = lp.getString(i);
-		
-				//TODO
-				//Check it is OK --> These checks must be done after parsing the formula
-				/*
-				boolean found = allAtoms.stream().filter( item -> item.equals(atom)).findAny().isPresent();
-				
-				if (!found)
-					throw new LoaderException() el atomo no esta en la tabla de atomos
-					pero otra opci�n es lanzar el atomo no esta en la formula y dejar que la opcion anterior salte al parsear la formula
 					
-				coordinates = new JSONArray();
-				�? coordinates.getJSONArray(0);
-				*/
-				
 			} else {
 				try {
 				
 				BigDecimal occurrences = atomic_positions.getBigDecimal(i);
 				
-				//if (occurrences<0 || occurrences>1)
-				//if (occurrences.compareTo(BigDecimal.ZERO)<0 || occurrences.compareTo(new BigDecimal(1.0))>0)
 				if (occurrences.abs().compareTo(BigDecimal.ONE)>0)
 					throw new LoaderException(LoaderException.ATOMIC_POSITIONS_OUT_OF_RANGE);
 					
@@ -508,132 +688,302 @@ public class DBitem {
 		
 		m_atomic_positions = atomic_positions;
 	}
-	
-	public JSONArray getAtomic_positions(){
-		return m_atomic_positions;
+
+	/**
+	 * Getter for the crystal information, which provides information 
+	 * about how the crystal structure was calculated (software, settings, …)
+	 *  or measured (temperature, pressure, method, …).
+	 *  
+	 * @return the crystal information
+	 */
+	public String getCrystal_info(){
+		return m_crystal_info;
 	}
-	
+
+	/**
+	 * Setter for the crystal information, which provides information 
+	 * about how the crystal structure was calculated (software, settings, …)
+	 *  or measured (temperature, pressure, method, …).
+	 * 
+	 * @param crystal_info
+	 */
 	public void setCrystal_info( String crystal_info){
 		m_crystal_info = crystal_info;
 	}
 	
-	public String getCrystal_info(){
-		return m_crystal_info;
+	/**
+	 * Getter for the unit cell energy, that is total ab initio energy of the unit cell,
+	 *  E. At T=0K and p=0, this is the internal energy of the system (per unit cell).
+	 *  In units of eV., [min,max]=[-100000.0000000,100000.0000000]
+	 * 
+	 * @return the unit cell energy
+	 */
+	public BigDecimal getUnitCellEnergy(){
+		return m_unit_cell_energy;
 	}
-	
+
+	/**
+	 * Setter for the unit cell energy, that is total ab initio energy of the unit cell,
+	 *  E. At T=0K and p=0, this is the internal energy of the system (per unit cell).
+	 *  In units of eV., [min,max]=[-100000.0000000,100000.0000000] 
+	 * 
+	 * @param unit_cell_energy
+	 */
 	public void setUnitCellEnergy( BigDecimal unit_cell_energy){
 		m_unit_cell_energy = unit_cell_energy;
 	}
 	
-	public BigDecimal getUnitCellEnergy(){
-		return m_unit_cell_energy;
+	/**
+	 * Getter for the unit cell formation enthalpy: 
+	 * formation enthalpy ∆HF per unit cell. In units of eV., 
+	 * [min,max]=[-1000.000000,1000.000000]
+	 * 
+	 * @return the unit cell formation enthalpy
+	 */
+	public BigDecimal getUnit_cell_formation_enthalpy(){
+		return m_unit_cell_formation_enthalpy;
 	}
-	
+
+	/**
+	 * Setter for the unit cell formation enthalpy: 
+	 * formation enthalpy ∆HF per unit cell. In units of eV., 
+	 * [min,max]=[-1000.000000,1000.000000]
+	 * 
+	 * @param unit_cell_formation_enthalpy
+	 */
 	public void setUnit_cell_formation_enthalpy( BigDecimal unit_cell_formation_enthalpy){
 		m_unit_cell_formation_enthalpy = unit_cell_formation_enthalpy;
 	}
 	
-	public BigDecimal getUnit_cell_formation_enthalpy(){
-		return m_unit_cell_formation_enthalpy;
+	/**
+	 * Getter for the energy info which provides information about how the energy
+	 *  and enthalpy of formation were calculated or meassured.
+	 * @return the energy info
+	 */
+	public String getEnergy_info(){
+		return m_energy_info;
 	}
-	
+
+	/**
+	 * Setter for the energy info which provides information about how the energy
+	 *  and enthalpy of formation were calculated or meassured.
+	 *  
+	 * @param energy_info
+	 */
 	public void setEnergy_info( String energy_info){
 		m_energy_info = energy_info;
 	}
 	
-	public String getEnergy_info(){
-		return m_energy_info;
+	/**
+	 * Getter for the interatomic potentials info which provides information about 
+	 * how the interatomic potentials were developed (software, settings, …). 
+	 * Potentials should be uploaded as an attached file.
+	 * @return
+	 */
+	public String getInteratomic_potentials_info(){
+		return m_interatomic_potentials_info;
 	}
-	
+
+	/**
+	 * Setter for the interatomic potentials info which provides information about 
+	 * how the interatomic potentials were developed (software, settings, …). 
+	 * Potentials should be uploaded as an attached file.
+	 * @param interatomic_potentials_info
+	 */
 	public void setInteratomic_potentials_info( String interatomic_potentials_info){
 		m_interatomic_potentials_info=interatomic_potentials_info;
 	}
 	
-	public String getInteratomic_potentials_info(){
-		return m_interatomic_potentials_info;
+	/**
+	 * Getter for the magnetic free energy in units of eV., 
+	 * [min,max]=[-100000.000000,100000.000000]
+	 * @return
+	 */
+	public BigDecimal getMagnetic_free_energy(){
+		return m_magnetic_free_energy;
 	}
-	
+
+	/**
+	 * Setter for the magnetic free energy in units of eV., 
+	 * [min,max]=[-100000.000000,100000.000000]
+
+	 * @param magnetic_free_energy
+	 */
 	public void setMagnetic_free_energy( BigDecimal magnetic_free_energy ){
 		m_magnetic_free_energy = magnetic_free_energy;
 	}
 	
-	public BigDecimal getMagnetic_free_energy(){
-		return m_magnetic_free_energy;
-	}
-	
-	public void setMagnetic_free_energy_info( String magnetic_free_energy_info){
-		m_magnetic_free_energy_info = magnetic_free_energy_info;
-	}
-	
+	/**
+	 * Getter for the magnetic free energy info, it provides information
+	 *  about how the magnetic free energy was calculated
+	 *   (software, thermodynamic model, temperature, …).
+	 * @return
+	 */
 	public String getMagnetic_free_energy_info(){
 		return m_magnetic_free_energy_info;
 	}
 
+	/**
+	 * Setter for the magnetic free energy info, it provides information
+	 *  about how the magnetic free energy was calculated
+	 *   (software, thermodynamic model, temperature, …).
+
+	 * @param magnetic_free_energy_info
+	 */
+	public void setMagnetic_free_energy_info( String magnetic_free_energy_info){
+		m_magnetic_free_energy_info = magnetic_free_energy_info;
+	}
+	
+	/**
+	 * Getter for the unit cell spin polarization, which is the total magnetization 
+	 * of the cell (in units of µB) 
+	 * [min,max]=[0.000000,10000.000000]
+	 * @return
+	 */
 	public BigDecimal getUnit_cell_spin_polarization() {
 		return m_unit_cell_spin_polarization;
 	}
 
+	/**
+	 * Setter for the unit cell spin polarization, which is the total magnetization 
+	 * of the cell (in units of µB) 
+	 * [min,max]=[0.000000,10000.000000]
+
+	 * @param m_unit_cell_spin_polarization
+	 */
 	public void setUnit_cell_spin_polarization(BigDecimal m_unit_cell_spin_polarization) {
 		this.m_unit_cell_spin_polarization = m_unit_cell_spin_polarization;
 	}
 
+	/**
+	 * Getter for the atomic spin specie, which represents the magnetization per atom
+	 *  of each specie (in units of µB/atom). 
+	 *  Example: ["1 Fe",2.659,"2 Ni",0.671]
+	 *  
+	 * @return a json array containing the atomic spin specie
+	 */
 	public JSONArray getAtomic_spin_specie() {
 		return m_atomic_spin_specie;
 	}
 
+	/**
+	 * Setter for the atomic spin specie, which represents the magnetization per atom
+	 *  of each specie (in units of µB/atom). 
+	 *  Example: ["1 Fe",2.659,"2 Ni",0.671]
+	 *  
+	 * @param m_atomic_spin_specie is a json array containing the atomic spin specie
+	 */
 	public void setAtomic_spin_specie(JSONArray m_atomic_spin_specie) {
 		this.m_atomic_spin_specie = m_atomic_spin_specie;
 	}
-
+	
+	/**
+	 * Getter for the saturation magnetization that is computed as
+	 *  unit cell spin polarization/ unit cell volume (in units of Tesla)
+	 * [min,max]=[0.000,100.000]
+	 * @return
+	 */
 	public BigDecimal getSaturation_magnetization() {
 		return m_saturation_magnetization;
 	}
 
+	/**
+	 * Setter for the saturation magnetization that is computed as
+	 *  unit cell spin polarization/ unit cell volume (in units of Tesla)
+	 * [min,max]=[0.000,100.000]
+	 * 
+	 * @param m_saturation_magnetization
+	 */
 	public void setSaturation_magnetization(BigDecimal m_saturation_magnetization) {
 		this.m_saturation_magnetization = m_saturation_magnetization;
 	}
-
+	
+	/**
+	 * Getter for the magnetization temperature, that is the temperature at which 
+	 * the magnetization is calculated or measured. 
+	 * In units of Kelvin [min,max]=[0.000,10000.000]
+	 * @return
+	 */
 	public BigDecimal getMagnetization_temperature() {
 		return m_magnetization_temperature;
 	}
 
+	/**
+	 * Setter for the magnetization temperature, that is the temperature at which 
+	 * the magnetization is calculated or measured. 
+	 * In units of Kelvin [min,max]=[0.000,10000.000]
+
+	 * @param m_magnetization_temperature
+	 */
 	public void setMagnetization_temperature(BigDecimal m_magnetization_temperature) {
 		this.m_magnetization_temperature = m_magnetization_temperature;
 	}
 
+	/**
+	 * Getter for the magnetization info, that provides information about
+	 *  how the magnetization was calculated (software, settings, …) or measured. 
+	 * @return
+	 */
 	public String getMagnetization_info() {
 		return m_magnetization_info;
 	}
 
+	/**
+	 * 	Setter for the magnetization info, that provides information about
+	 *  how the magnetization was calculated (software, settings, …) or measured. 
+
+	 * @param m_magnetization_info
+	 */
 	public void setMagnetization_info(String m_magnetization_info) {
 		this.m_magnetization_info = m_magnetization_info;
 	}
 
+	/**
+	 * Getter for the magnetocrystalline anisotropy energy, which is the energy
+	 *  of unit cell when magnetization is constraint in some particular directions.
+	 *  In units of eV.
+	 *  Format= direction of magnetization (mx,my,mz), energy; …
+	 *  Example: [	0,0,1,-13.94019080,
+	 *  			1,0,1,-13.94012990,
+	 *  			1,0,0,-13.94008791,
+	 *  			0,1,0,-13.94008803]
+	 * @return a json array containng the magnetocrystalline anisotropy energy
+	 */
 	public JSONArray getMagnetocrystalline_anisotropy_energy() {
 		return m_magnetocrystalline_anisotropy_energy;
 	}
 
+	/**
+	 * Setter for the magnetocrystalline anisotropy energy, which is the energy
+	 *  of unit cell when magnetization is constraint in some particular directions.
+	 *  In units of eV.
+	 *  Format= direction of magnetization (mx,my,mz), energy; …
+	 *  Example: [	0,0,1,-13.94019080,
+	 *  			1,0,1,-13.94012990,
+	 *  			1,0,0,-13.94008791,
+	 *  			0,1,0,-13.94008803]
+ 
+	 * @param m_magnetocrystalline_anisotropy_energy is a json array containng the magnetocrystalline anisotropy energy
+	 */
 	public void setMagnetocrystalline_anisotropy_energy(JSONArray m_magnetocrystalline_anisotropy_energy) {
 		this.m_magnetocrystalline_anisotropy_energy = m_magnetocrystalline_anisotropy_energy;
 	}
-
+	
+	/**
+	 * Setter for the anisotropy energy type, that can be uniaxial or cubic or planar.
+	 *   
+	 * @return U when uniaxial, C when cubic, P when planar
+	 */
 	public String getAnisotropy_energy_type() {
 			return m_anisotropy_energy_type;
 	}
-			
-	public String decodeAnisotropy_energy_type() {		
-		
-		switch (m_anisotropy_energy_type){
-			case "U":
-				return "uniaxial";
-			case "C":
-				return "cubic";
-			case "P":
-				return "planar";
-		}
-		return null;		
-	}
 
+	/**
+	 * Setter for the anisotropy energy type, that can be uniaxial or cubic or planar.
+	 *   
+	 * @param m_anisotropy_type must be U when uniaxial, C when cubic, P when planar
+	 * @throws LoaderException when none of the values avobe is used as argument
+	 */
 	public void setAnisotropy_energy_type(String m_anisotropy_type) throws LoaderException {
 		
 		if(m_anisotropy_type==null){
@@ -656,33 +1006,55 @@ public class DBitem {
 				throw new LoaderException(LoaderException.ANISOTROPY_ENENRGY_TYPE_INCORRECT);
 		}
 	}
-	
+
+	/**
+	 * Getter for the magnetocrystalline anisotropy constants
+	 *  K1 and K2 in units of MJ/m3, separeted by “,”. 
+	 *  An uniaxial anisotropy energy type with K1<0 means a planar anisotropy, 
+	 *  while K1>0 implies an easy axis (uniaxial).
+	 *  [min,max]=[-100.000,100.000]
+	 *  Example: [0.73,0.00]
+	 *  
+	 * @return a json array containing the magnetocrystalline anisotropy constants
+	 */
 	public JSONArray getMagnetocrystalline_anisotropy_constants() {
 		return m_magnetocrystalline_anisotropy_constants;
 	}
 
+	/**
+	 * Setter for the magnetocrystalline anisotropy constants
+	 *  K1 and K2 in units of MJ/m3, separeted by “,”. 
+	 *  An uniaxial anisotropy energy type with K1<0 means a planar anisotropy, 
+	 *  while K1>0 implies an easy axis (uniaxial).
+	 *  [min,max]=[-100.000,100.000]
+	 *  Example: [0.73,0.00]
+
+	 * 
+	 * @param m_magnetocrystalline_anisotropy_constants is a a json array containing the magnetocrystalline anisotropy constants
+	 */
 	public void setMagnetocrystalline_anisotropy_constants(JSONArray m_magnetocrystalline_anisotropy_constants) {
 		this.m_magnetocrystalline_anisotropy_constants = m_magnetocrystalline_anisotropy_constants;
 	}
 
-	
+	/**
+	 * Getter for the kind of anisotropy
+	 * (i.e., easy axis, easy plane, easy cone)
+	 *  
+	 * @return A when easy axis, P when planar easy axis, C when easy cone
+	 */
 	public String getKind_of_anisotropy() {
 		return m_kind_of_anisotropy;
 	}
 	
-	public String decodeKind_of_anisotropy() {
-		switch (m_kind_of_anisotropy){
-		case "A":
-			return "easy axis";
-		case "P":
-			return "planar easy axis";
-		case "C":
-			return "easy cone";
-		}
-		return null;
-		
-	}
+	/**
+	 * 	Setter for the kind of anisotropy
+	 * (i.e., easy axis, easy plane, easy cone)
 
+	 * 
+	 * @param m_kind_of_anisotropy can take the values
+	 * A when easy axis, P when planar easy axis, C when easy cone
+	 * @throws LoaderException when none of the values above is taken by the argument
+	 */
 	public void setKind_of_anisotropy(String m_kind_of_anisotropy) throws LoaderException {
 		
 		if (m_kind_of_anisotropy==null){
@@ -704,174 +1076,408 @@ public class DBitem {
 		}		
 	}
 
+	/**
+	 * Getter for the anisotropy info, that provides information about 
+	 * how the magnetocrystalline anisotropy was calculated (software, settings, …) 
+	 * or measured (method, conditions, …).
+	 * @return
+	 */
 	public String getAnisotropy_info() {
 		return m_anisotropy_info;
 	}
 
+	/**
+	 * Setter for the anisotropy info, that provides information about 
+	 * how the magnetocrystalline anisotropy was calculated (software, settings, …) 
+	 * or measured (method, conditions, …).
+
+	 * @param m_anisotropy_info
+	 */
 	public void setAnisotropy_info(String m_anisotropy_info) {
 		this.m_anisotropy_info = m_anisotropy_info;
 	}
 
+	/**
+	 * Getter for the exchange integrals in units of mRy, sorted by interatomic distance.
+	 *  Exchange energy is written as E_ex=-1/2 ∑▒J_ij  s_i∙s_j, 
+	 *  where J_ij is the exchange integral and
+	 *   s_i is the unit vector along the i-th atomic magnetic moment.
+	 *  Example: [	"Fe-Fe",2.22119,1.35194,0.38785,0.50683,-0.67064,-0.4195,
+	 *  			"Ni-Ni",0.29772,-0.04463,0.04442,0.04059,-0.01808,-0.00461,
+	 *  			"Fe-Ni",1.27737,0.08671,0.03079,-0.02957,0.01218,0.0091] 
+	 *  
+	 * @return a json array containing the exchange integrals
+	 */
 	public JSONArray getExchange_integrals() {
 		return m_exchange_integrals;
 	}
 
+	/**
+	 * Setter for the exchange integrals in units of mRy, sorted by interatomic distance.
+	 *  Exchange energy is written as E_ex=-1/2 ∑▒J_ij  s_i∙s_j, 
+	 *  where J_ij is the exchange integral and
+	 *   s_i is the unit vector along the i-th atomic magnetic moment.
+	 *  Example: [	"Fe-Fe",2.22119,1.35194,0.38785,0.50683,-0.67064,-0.4195,
+	 *  			"Ni-Ni",0.29772,-0.04463,0.04442,0.04059,-0.01808,-0.00461,
+	 *  			"Fe-Ni",1.27737,0.08671,0.03079,-0.02957,0.01218,0.0091] 
+	
+	 * 
+	 * @param m_exchange_integrals is a json array containing the exchange integrals
+	 */
 	public void setExchange_integrals(JSONArray m_exchange_integrals) {
 		this.m_exchange_integrals = m_exchange_integrals;
 	}
 
+	/**
+	 * Getter for the exchange info, which returns information about 
+	 * how exchange integrals were calculated (software, settings, …).
+	 * @return
+	 */
 	public String getExchange_info() {
 		return m_exchange_info;
 	}
 
+	/**
+	 * Setter for the exchange info, which returns information about 
+	 * how exchange integrals were calculated (software, settings, …).
+
+	 * @param m_exchange_info
+	 */
 	public void setExchange_info(String m_exchange_info) {
 		this.m_exchange_info = m_exchange_info;
 	}
 
+	/**
+	 * Getter for the magnetic order:
+	 *  Ferromagnet, Antiferromagnet, Ferrimagnet, Paramagnet, Diamagnet, …
+	 * @return
+	 */
 	public String getMagnetic_order() {
 		return m_magnetic_order;
 	}
 
+	/**
+	 * 	Setter for the magnetic order:
+	 *  Ferromagnet, Antiferromagnet, Ferrimagnet, Paramagnet, Diamagnet, …
+
+	 * @param m_magnetic_order
+	 */
 	public void setMagnetic_order(String m_magnetic_order) {
 		this.m_magnetic_order = m_magnetic_order;
 	}
 
+	/**
+	 * Getter for the Curie temperature in units of Kelvin.
+	 * [min,max]=[0.000,10000.000]
+	 * @return
+	 */
 	public BigDecimal getCurie_temperature() {
 		return m_curie_temperature;
 	}
 
+	/**
+	 * Setter for the Curie temperature in units of Kelvin.
+	 * [min,max]=[0.000,10000.000]
+
+	 * @param m_curie_temperature
+	 */
 	public void setCurie_temperature(BigDecimal m_curie_temperature) {
 		this.m_curie_temperature = m_curie_temperature;
 	}
-
+	
+	/**
+	 * Getter for the Curie temperature info, that provides information about 
+	 * how Curie temperature was calculated (MFA, RPA, ASD, 
+	 * longitudinal susceptibility peak, fourth-order Binder cumulant) 
+	 * or measured (method, …).
+	 * @return
+	 */
 	public String getCurie_temperature_info() {
 		return m_curie_temperature_info;
 	}
 
+	/**
+	 * Setter for the Curie temperature info, that provides information about 
+	 * how Curie temperature was calculated (MFA, RPA, ASD, 
+	 * longitudinal susceptibility peak, fourth-order Binder cumulant) 
+	 * or measured (method, …).
+
+	 * @param m_curie_temperature_info
+	 */
 	public void setCurie_temperature_info(String m_curie_temperature_info) {
 		this.m_curie_temperature_info = m_curie_temperature_info;
 	}
 
+	/**
+	 * Getter for the anisotropy field in units of Tesla.
+	 * [min,max]=[0.000,100.000]
+	 * @return
+	 */
 	public BigDecimal getAnisotropy_field() {
 		return m_anisotropy_field;
 	}
 
+	/**
+	 * Setter for the anisotropy field in units of Tesla.
+	 * @param m_anisotropy_field
+	 */
 	public void setAnisotropy_field(BigDecimal m_anisotropy_field) {
 		this.m_anisotropy_field = m_anisotropy_field;
 	}
 
+	/**
+	 * Getter for the remanence in units of Tesla.
+	 * [min,max]=[0.000,100.000
+	 * @return
+	 */
 	public BigDecimal getRemanence() {
 		return m_remanence;
 	}
 
+	/**
+	 * Setter for the remanence in units of Tesla.
+	 * [min,max]=[0.000,100.000
+
+	 * @param m_remanence
+	 */
 	public void setRemanence(BigDecimal m_remanence) {
 		this.m_remanence = m_remanence;
 	}
 
+	/**
+	 * Getter for the coercivity in units of Tesla.
+	 * [min,max]=[0.000,100.000]
+	 * @return
+	 */
 	public BigDecimal getCoercivity() {
 		return m_coercivity;
 	}
 
+	/**
+	 * Setter for the coercivity in units of Tesla.
+	 * [min,max]=[0.000,100.000]
+	 * @param m_coercivity
+	 */
 	public void setCoercivity(BigDecimal m_coercivity) {
 		this.m_coercivity = m_coercivity;
 	}
 
+	/**
+	 * Getter for the energy product in units of kJ/m3.
+	 * [min,max]=[0.000,10000.000]
+	 * @return
+	 */
 	public BigDecimal getEnergy_product() {
 		return m_energy_product;
 	}
 
+	/**
+	 * Setter for the energy product in units of kJ/m3.
+	 * [min,max]=[0.000,10000.000]
+
+	 * @param m_energy_product
+	 */
 	public void setEnergy_product(BigDecimal m_energy_product) {
 		this.m_energy_product = m_energy_product;
 	}
 
+	/**
+	 * Getter for the hysteresis info, that provides information about
+	 *  how hysterisis properties (anisotropy field, remanence, coercivity and 
+	 *  energy product) were calculated (ASD, micromagnetics, temperature, …) 
+	 *  or measured (method, conditions, …).. 
+	 * @return
+	 */
 	public String getHysteresis_info() {
 		return m_hysteresis_info;
 	}
 
+	/**
+	 * 	Setter for the hysteresis info, that provides information about
+	 *  how hysterisis properties (anisotropy field, remanence, coercivity and 
+	 *  energy product) were calculated (ASD, micromagnetics, temperature, …) 
+	 *  or measured (method, conditions, …).. 
+
+	 * @param m_hysteresis_info
+	 */
 	public void setHysteresis_info(String m_hysteresis_info) {
 		this.m_hysteresis_info = m_hysteresis_info;
 	}
 
+	/**
+	 * Getter for the domain wall width in units of nm. 
+	 * [min,max]=[0.000,1000.000]
+	 * @return
+	 */
 	public BigDecimal getDomain_wall_width() {
 		return m_domain_wall_width;
 	}
 
+	/**
+	 * Setter for the domain wall width in units of nm. 
+	 * [min,max]=[0.000,1000.000]
+
+	 * @param m_domain_wall_width
+	 */
 	public void setDomain_wall_width(BigDecimal m_domain_wall_width) {
 		this.m_domain_wall_width = m_domain_wall_width;
 	}
-
+	
+	/**
+	 * Getter for the domain wall info, that provides information about
+	 *  how domain wall width was calculated (model, ASD, temperature, …) 
+	 *  or measured (method, conditions, …).
+	 * @return
+	 */
 	public String getDomain_wall_info() {
 		return m_domain_wall_info;
 	}
 
+	/**
+	 * 	Setter for the domain wall info, that provides information about
+	 *  how domain wall width was calculated (model, ASD, temperature, …) 
+	 *  or measured (method, conditions, …).
+	 * @param m_domain_wall_info
+	 */
 	public void setDomain_wall_info(String m_domain_wall_info) {
 		this.m_domain_wall_info = m_domain_wall_info;
 	}
 
+	/**
+	 * Getter for the exchange stiffness in units of pJ/m.
+	 * [min,max]=[0.000,1000.000]
+	 * @return
+	 */
 	public BigDecimal getExchange_stiffness() {
 		return m_exchange_stiffness;
 	}
 
+	/**
+	 * Setter for the exchange stiffness in units of pJ/m.
+	 * [min,max]=[0.000,1000.000]
+	 * @param m_exchange_stiffness
+	 */
 	public void setExchange_stiffness(BigDecimal m_exchange_stiffness) {
 		this.m_exchange_stiffness = m_exchange_stiffness;
 	}
 
+	/**
+	 * Getter for the exchange stiffness info, that provides information about 
+	 * how exchange stiffness was calculated (model, ASD, temperature, …) 
+	 * or measured (method, conditions, …). 
+	 * @return
+	 */
 	public String getExchange_stiffness_info() {
 		return m_exchange_stiffness_info;
 	}
-
+	
+	/**
+	 * Setter for the exchange stiffness info, that provides information about 
+	 * how exchange stiffness was calculated (model, ASD, temperature, …) 
+	 * or measured (method, conditions, …). 
+	 * @param m_exchange_stiffness_info
+	 */
 	public void setExchange_stiffness_info(String m_exchange_stiffness_info) {
 		this.m_exchange_stiffness_info = m_exchange_stiffness_info;
 	}
 
-	public JSONArray getAuthors() {
-		return m_authors;
-	}
-
-	public void setAuthors(JSONArray m_authors) {
-		this.m_authors = m_authors;
-	}
-
+	/**
+	 * Getter for the publications or links where these data can be found
+	 * @return
+	 */
 	public String getReference() {
 		return m_reference;
 	}
 
+	/**
+	 * Setter for the publications or links where these data can be found
+	 * @param m_reference
+	 */
 	public void setReference(String m_reference) {
 		this.m_reference = m_reference;
 	}
 
+	/**
+	 * Getter for the additional information about these data,
+	 *  which was not mentioned above.
+	 * @return
+	 */
 	public String getComments() {
 		return m_comments;
 	}
 
+	/**
+	 *  Setter for the additional information about these data,
+	 *  which was not mentioned above.
+
+	 * @param m_comments
+	 */
 	public void setComments(String m_comments) {
 		this.m_comments = m_comments;
 	}
 
+	/**
+	 * Getter for the names or/and institutions which are the authors of these data.
+	 *  Example ["One author", "Other author"]
+	 * @return a json array with the list of authors
+	 */
+	public JSONArray getAuthors() {
+		return m_authors;
+	}
+
+	/**
+	 * 	Setter for the names or/and institutions which are the authors of these data.
+	 *  Example ["One author", "Other author"]
+
+	 * @param m_authors is a json array with the list of authors
+	 */
+	public void setAuthors(JSONArray m_authors) {
+		this.m_authors = m_authors;
+	}
+
+	/**
+	 * Getter for the crystallographic data (metadata format CIF, CONTCAR.vasp, …), 
+	 * property values versus temperature, property values versus external magnetic field,
+	 *  interatomic potentials, figures,
+	 *  Example: ["Fe10Ta2_#129_1.cif", "CONTCAR_Fe10Ta2_#129_1"]
+	 *  
+	 * @return a json array with a list of file names (the path is assumed that is the
+	 * same path than the json file that references them)
+	 */
 	public JSONArray getAttached_files() {
 		return m_attached_files;
 	}
 
+	/**
+	 * Setter for the crystallographic data (metadata format CIF, CONTCAR.vasp, …), 
+	 * property values versus temperature, property values versus external magnetic field,
+	 *  interatomic potentials, figures,
+	 *  Example: ["Fe10Ta2_#129_1.cif", "CONTCAR_Fe10Ta2_#129_1"]
+	 *  
+	 * @param m_attached_files is a a json array with a list of file names (the path is assumed that is the
+	 * same path than the json file that references them)
+	 */
 	public void setAttached_files(JSONArray m_attached_files) {
 		this.m_attached_files = m_attached_files;
 	}
 
+	/**
+	 * Getter for the attached files info providing a short description 
+	 * of the attached files, that is, which information contain and how it was obtained. 
+	 *  
+	 * @return a json array with the same number of elements than the attached files json array
+	 */
 	public JSONArray getAttached_files_info() {
 		return m_attached_files_info;
 	}
 
+	/**
+	 * Setter for the attached files info providing a short description 
+	 * of the attached files, that is, which information contain and how it was obtained. 
+	 *
+	 * @param m_attached_files_info is a json array with the same number of elements than the attached files json array
+	 */
 	public void setAttached_files_info(JSONArray m_attached_files_info) {
 		this.m_attached_files_info = m_attached_files_info;
-	}
-	
-	private void setJSONArray(
-			PreparedStatement pstm,
-			int position, JSONArray val ) throws SQLException{
-		if (val==null){
-			pstm.setNull(position, Types.VARCHAR);
-		} else{
-			pstm.setString(position, val.toString());
-		}
-			
 	}
 }

@@ -1,41 +1,62 @@
 package json_loader.dao;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import javax.naming.NamingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import json_loader.error_handling.LoaderException;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * Items.java
+ *  Class to represent a java object containing the info of a material
+ *  that is stored in the items SQL table
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Items {
 	
-	private static Logger l = null;
+	private static Logger l = LoggerFactory.getLogger(Items.class);
 	
 	private DBitem m_DBitem;
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	public Items(){
-		l =	LoggerFactory.getLogger(Items.class);
-	}
-	
+	/**
+	 * 
+	 * Setter for the id (primary key) that identifies the item in the SQL table
+	 * 
+	 * @param arg_DBitem is the items.mafId value of the material
+	 * (i.e.; the primary key value in the items table)
+	 */
 	public void setDBItem( DBitem arg_DBitem ){
 		m_DBitem = arg_DBitem;
 	}
 	
+	/**
+	 * Makes SQL insertion of the DBitm info that must be allocated
+	 * into the items table
+	 * 
+	 * @param con is the database connection. If it's null a new connection is
+	 * 	created and also released at the end of the method
+	 *  Usually this param is not null, as this insertion is part of the item insertion
+	 *  in DBitem class, and both share the same transaction, so both share the same
+	 *  connection as well. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param doCommit is true if the insertions must be committed at the end
+	 *  of method execution, and it's false if not
+	 *  Usually this param is false, as this insertion is part of the item insertion
+	 *  in DBitem class. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param con
+	 * @param doCommit
+	 */
 	public void insert( Connection con, boolean doCommit)
-			throws LoaderException, IOException, NamingException{
+	{
 		
 		ConnectionPool p = null;		
 		boolean closeConnection=false;

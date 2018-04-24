@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/json_loader/dao/Attached_files.java=UTF-8
 encoding//src/json_loader/dao/Authors.java=UTF-8
+encoding//src/json_loader/dao/DBitem.java=UTF-8
 encoding//test/json_loader/dao/TestAttachedFiles.java=UTF-8
 encoding//test/json_loader/dao/TestAuthors.java=UTF-8

@@ -15,18 +15,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import json_loader.error_handling.DBMSError;
-import json_loader.error_handling.LoaderException;
+import json_loader.error_handling.PostgresTableError;
 import json_loader.utils.Cleaner;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * Authors.java
+ *  Class to represent a java object containing the list of authors of a material
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Authors {
-	private static Logger l = null;	
+	private static Logger l = LoggerFactory.getLogger(Authors.class);	
 	
 	private JSONArray m_authors;
 	private long lastMafId;
 
-	public static void main(String[] args) throws IOException, NamingException {
-		
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws IOException
+	 * @throws NamingException
+	 */
+	public static void main(String[] args) throws IOException, NamingException {		
 		
 		String		js ="[\"Autor1\",\"Autor2\",\"Autor3\",\"Autor4\"]";
 		JSONArray	ja = new JSONArray(js);
@@ -95,21 +110,54 @@ public class Authors {
 
 	}
 	
-	public Authors(long itemKey){
-		l =	LoggerFactory.getLogger(Authors.class);
+	/**
+	 * Class constructor
+	 * It sets the foreign key that references items table
+	 * 
+	 * @param itemKey is the items.mafId value of the material related
+	 * with the list of authors in the Authors object
+	 */
+	public Authors(long itemKey){		
 		lastMafId = itemKey;
 	}
 	
+	/**
+	 * Setter for the list of authors
+	 * 
+	 * @param j is a json array of strings, each string is an author
+	 */
 	public void setAuthors( JSONArray j ){
 		m_authors=j;
 	}
 	
+	/**
+	 * Getter for the list of authors 
+	 * 
+	 * @return a json array of strings, where each string is an author
+	 */
 	public JSONArray getAutors(){
 		return m_authors;
 	}
 	
-	public void insert( Connection con, boolean doCommit )
-			throws LoaderException, IOException, NamingException{
+	/**
+	 * Makes the necessary SQL insertions in the authoring table
+	 * to associate the list of authors in the Authors object to its
+	 * item
+	 * If an author is not present in authors table, then it is inserted in this table
+	 * 
+	 * @param con is the database connection. If it's null a new connection is
+	 * 	created and also released at the end of the method
+	 *  Usually this param is not null, as this insertion is part of the item insertion
+	 *  in DBitem class, and both share the same transaction, so both share the same
+	 *  connection as well. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param doCommit is true if the insertions must be committed at the end
+	 *  of method execution, and it's false if not
+	 *  Usually this param is false, as this insertion is part of the item insertion
+	 *  in DBitem class. However you can set it to true for debugging and testing
+	 *  purposes.
+	 */
+	public void insert( Connection con, boolean doCommit ){
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -150,8 +198,27 @@ public class Authors {
 		
 	}
 	
+	/**
+	 * 
+	 * It inserts a new author in the authors SQL table
+	 * If the author exists in the database do nothing
+	 * 
+	 * @param theAuthor is the author to be inserted
+	 * @param con is the connection.  If it's null a new connection is
+	 * 	created and also released at the end of the method
+	 *  Usually this param is not null, as this insertion is part of the authoring insertion
+	 *  (see insert method above), and both share the same transaction, so both share the same
+	 *  connection as well. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param doCommit is true if the insertion must be committed at the end
+	 *  of method execution, and it's false if not
+	 *  Usually this param is false, as this insertion is part of the authoring insertion
+	 *  (see insert method above). However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @throws SQLException
+	 */
 	private void insertAuthor( String theAuthor, Connection con, boolean doCommit )
-			throws LoaderException, IOException, NamingException, SQLException{
+			throws SQLException{
 		
 			ConnectionPool p = null;
 			boolean closeConnection=false;
@@ -177,7 +244,7 @@ public class Authors {
 						con.commit();
 					
 				} catch (SQLException e){
-					if (p.getTableError().checkExceptionToCode( e, DBMSError.valueOf("UNQ_VIOLATED"))){						
+					if ((new PostgresTableError()).checkExceptionToCode( e, DBMSError.valueOf("UNQ_VIOLATED"))){						
 						//It's OK the author has already been inserted before => Do nothing
 						con.rollback(savepoint);
 					} else {

@@ -5,28 +5,46 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import json_loader.error_handling.LoaderException;
 
-//import json_loader.error_handling.LoaderException;
-
+/**
+ * ArrayFormula.java
+ *  Class that stores both chemical and stechiometric representation of a formula
+ *  In the chemical representation all atoms sub-indexes are integer
+ *  In the stechiometric representation the atom sub-indexes are decimal numbers
+ *  
+ *  Each object consists of
+ *  	A dictionary to store the chemical formula 
+ *  		( key=atomic symbol, value=integer)
+ *  	A dictionary to store the stechiometric formula using BigDecimals
+ *  		( key=atomic symbol, value=BigDecimal)
+ *  	A dictionary to store the stechiometric formula using Fractions
+ *  		( key=atomic symbol, value=Fraction)
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class ArrayFormula {
 	
 	public static final int NUMDECIMALS=3;	
 	public static final BigDecimal EPSILON = new BigDecimal(Math.pow(10, -ArrayFormula.NUMDECIMALS+1));
 	
-	private static Logger l = null;	
-	
 	private BigDecimal m_numAtoms=BigDecimal.ZERO; //Sum of all symbol sub-indexes
-	private int m_numElements=0;	//Number of different elments present in any proportion in the formula
+	private int m_numElements=0;	//Number of different elements present in any proportion in the formula
 	private int m_typeOfFormula;
 	
 	TreeMap<String, BigDecimal> chemicalDict;
 	TreeMap<String, BigDecimal> stechiometryDict;
 	TreeMap<String, Fraction> fractStechiometryDict;
 
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws LoaderException
+	 */
 	public static void main(String[] args) throws LoaderException {
 		// Test
 		
@@ -91,8 +109,11 @@ public class ArrayFormula {
 
 	}
 	
+	/**
+	 * Constructor for this class
+	 * @param typeOfFormula
+	 */
 	public ArrayFormula(int typeOfFormula) {
-		l =	LoggerFactory.getLogger(ArrayFormula.class);
 		
         chemicalDict = new TreeMap<String, BigDecimal>();
         stechiometryDict = new TreeMap<String, BigDecimal>();
@@ -100,22 +121,110 @@ public class ArrayFormula {
         m_typeOfFormula=typeOfFormula;
     }
 	
+	/**
+	 * Getter of the integer corresponding to a given
+	 * atomic symbol in the chemical representation
+	 * of the formula
+	 * Note: It must be an integer, but was implemented for convenience
+	 * as BigDecimal to store it, because in an intermediate state
+	 * it can contains a decimal (i.e., when it is a stechiometric formula
+	 * and the chemical formula still wasn't computed) 
+	 * 
+	 * @param key is the atomic symbol to search
+	 * @return the integer corresponding to the searched atomic symbol
+	 */
     public BigDecimal getChemical(String key){
         return chemicalDict.get(key);
     }
     
+	/**
+	 * Setter of the integer corresponding to a given
+	 * atomic symbol in the chemical representation
+	 * of the formula
+	 * Note: It must be an integer, but was implemented for convenience
+	 * as BigDecimal to store it, because in an intermediate state
+	 * it can contains a decimal (i.e., when it is a stechiometric formula
+	 * and the chemical formula still wasn't computed) 	 
+	 *  
+     * @param key is the atomic symbol to set
+     * @param value is the integer corresponding to this atomic symbol
+     */
+    private void setChemical(String key, BigDecimal value){    	
+			chemicalDict.put(key, value);    		
+	}
+
+	/**
+	 * Getter of the BigDecimal corresponding to a given
+	 * atomic symbol in the stechiometric representation
+	 * with decimal numbers of the formula
+	 * 
+	 * @param key is the atomic symbol to search
+	 * @return the BigDecimal corresponding to the searched atomic symbol
+	 */
     public BigDecimal getStechiometry(String key){
         return stechiometryDict.get(key);
     }
     
-    private void setChemical(String key, BigDecimal value){    	
-    		chemicalDict.put(key, value);    		
-    }
-    
+    /**
+     * Setter of the BigDecimal corresponding to a given
+	 * atomic symbol in the stechiometric representation
+	 * with decimal numbers of the formula
+	 * 
+     * @param key is the atomic symbol to set
+     * @param value is the decimal number corresponding to this atomic symbol
+     */
     private void setStechiometry(String key, BigDecimal value){    	
 			stechiometryDict.put(key, value);    		
     }
    
+    /**
+     * It inserts a new symbol in the formula along with the sub-index
+     * Both the symbol and the sub-index are represented as strings, as it
+     * is supposed this method is invoked directly from the FormulaPaser.java
+     * 
+     * The sub-index is cleaned, getting rid of spaces, and converted to BigDecimal
+     * BigDecimal is the common representation of sub-indexes, as they could be decimal
+     * if it is an stechiometric formula
+     * When a symbol has no sub-index, sub-index "1" is assigned (e.g., O in H2O is transformed to O1)
+     * The new pair symbol+sub-index is inserted in the formula by calling
+     *  insertElement(String key, BigDecimal value)
+     * 
+     * @param key is the atomic symbol
+     * @param value is the symbol sub-index
+     * @throws LoaderException if when converting the value to BigDecimal it turns out that 
+     * it it not a number.
+     */
+    public void insertElement(String key, String value) throws LoaderException{
+		
+		BigDecimal bd=null;
+		value.replaceAll("\\s",""); //Get rid of spaces and non-visible chars
+		
+		// In case there there's no number in a classical formula, it means ONE
+		if (m_typeOfFormula==FormulaParser.CHEMICAL_FORMULA &&
+				value.length()==0)
+			bd = new BigDecimal(1);
+		else
+			try{
+				bd = new BigDecimal(value);
+			} catch (NumberFormatException e){
+				throw new LoaderException(LoaderException.ATOM_INDEX_IS_NOT_A_NUMBER);
+			}    	
+		
+		insertElement( key, bd);
+	}
+
+	/**
+     * Try to add a new atomic symbol along with its numeric sub-index in a formula
+     * In this method the sub-index is a BigDecimal.
+     * It adds a new pair symbol+sub-index in the formula
+     * once the sub-index as String is transformed to a BigDecimal
+     * by insertElement(String key, String value)
+     * 
+     * @param key is an atomic symbol
+     * @param value is the corresponding numeric sub-index
+     * @throws LoaderException if the atom was already in the formula or the type of formula
+     * doesn't be specified as chemical or stechiometric yet
+     */
     public void insertElement(String key, BigDecimal value) throws LoaderException {
     	
     	BigDecimal nAtoms = getChemical(key);    	
@@ -136,8 +245,27 @@ public class ArrayFormula {
     	
     }
     
-    public void checkAndNormalize() throws LoaderException{
-    	
+    /**
+     * If the type of formula is set as chemical:
+     * 1) It normalizes the molecule (i.e., it computes a stechiometric decimal representation
+     *    such that all the atoms stechiometric simbols sum 1)
+     * 2) and stores it in the corresponding dictionary 
+     * 
+     * If the type of formula is set as stechiometric
+     * 1) It tests that the formula is normalized (i.e., it tests that in the stechiometric
+     *    decimal representation all the atoms stechiometric simbols sum 1).
+     *    It throws an exception if the test fails.
+     * 2) It computes the fractional representation 
+     * 		and stores it in the corresponding dictionary
+     * 3) It computes the chemical representation
+     * 		and stores it in the corresponding dictionary 
+     * 
+     * @throws LoaderException 
+     * 		when trying to compute chemical representation it finds out that 
+     * 			the stechiometric sub-indexes does not sum one
+     * 		or when the type of formula doesn't be specified as chemical or stechiometric yet
+     */
+    public void checkAndNormalize() throws LoaderException{    	
     	
     	if (m_typeOfFormula==FormulaParser.CHEMICAL_FORMULA){
     		//Compute and store stechiometric formula
@@ -166,8 +294,44 @@ public class ArrayFormula {
     		throw new LoaderException(LoaderException.MISSING_TYPE_OF_FORMULA);
     }
     
-        
-    private TreeMap<String,CandidateFractions> computeAllFractions(){
+    /**
+     * 
+     * It computes the fractional representation of the Formula given the stechiometry in the stechiometryDict
+     * With the numerators in the fractions it gets the chemical representation 
+     * It also updates the  number of atoms with the sum of atom sub-indexes in the chemical formula 
+     **/
+	void computeChemical(){
+		
+		TreeMap<String, CandidateFractions> allFractions = computeAllFractions();
+		
+		FractionsSelector fs = new FractionsSelector();
+		fs.setAllF(allFractions);
+		fs.computeAllCombinations();
+		
+		FractFormula cf = fs.getLowestDenominator();
+		fractStechiometryDict = cf.getComponents();
+		
+		m_numAtoms=BigDecimal.ZERO;
+		for (Map.Entry<String, Fraction> entry : fractStechiometryDict.entrySet()  ){
+			
+			String key = entry.getKey();
+			Fraction f = entry.getValue();
+			
+			chemicalDict.put(key, new BigDecimal(f.getNumerator()));
+			m_numAtoms=m_numAtoms.add(new BigDecimal(f.getNumerator()));
+		}
+		
+	}
+
+	/**
+	 * It computes all fractions that are a good approximation to the decimal sub-index
+	 * of each symbol in the stechiometric formula
+	 *  
+	 * @return the tree map of pairs key-value, in which the key is an atomic symbol
+	 * and the value a collection of cantidate fractions that are a good approximation
+     * to the decimal sub-index of each symbol in the stechiometric formula
+	 */
+	private TreeMap<String,CandidateFractions> computeAllFractions(){
     	
     	TreeMap<String, CandidateFractions> allFractions =
     			new TreeMap<String, CandidateFractions>();    	
@@ -184,54 +348,23 @@ public class ArrayFormula {
     	return allFractions;
     }
     
-    //It compuetes the FractFormula given the stechiometry in the stechiometryDict
-    void computeChemical(){
-    	
-    	TreeMap<String, CandidateFractions> allFractions = computeAllFractions();
-    	
-    	FractionsSelector fs = new FractionsSelector();
-    	fs.setAllF(allFractions);
-    	fs.computeAllCombinations();
-    	
-    	FractFormula cf = fs.getLowestDenominator();
-    	fractStechiometryDict = cf.getComponents();
-    	
-    	m_numAtoms=BigDecimal.ZERO;
-    	for (Map.Entry<String, Fraction> entry : fractStechiometryDict.entrySet()  ){
-    		
-    		String key = entry.getKey();
-    		Fraction f = entry.getValue();
-    		
-    		chemicalDict.put(key, new BigDecimal(f.getNumerator()));
-    		m_numAtoms=m_numAtoms.add(new BigDecimal(f.getNumerator()));
-    	}
-    	
-	}
-    
-    public void insertElement(String key, String value) throws LoaderException{
-    	
-    	BigDecimal bd=null;
-    	value.replaceAll("\\s",""); //Get rid of spaces and non-visible chars
-    	
-    	// In case there there's no number in a classical formula, it means ONE
-    	if (m_typeOfFormula==FormulaParser.CHEMICAL_FORMULA &&
-    			value.length()==0)
-    		bd = new BigDecimal(1);
-    	else
-    		try{
-    			bd = new BigDecimal(value);
-    		} catch (NumberFormatException e){
-    			throw new LoaderException(LoaderException.ATOM_INDEX_IS_NOT_A_NUMBER);
-    		}    	
-    	
-    	insertElement( key, bd);
-    }
-    
+	/**
+	 * 
+	 * String reperesentation of this object. For debugging purposes.
+	 */
     public String toString() {
         return chemicalDict.toString();
     }
     
-    
+    /**
+     * 
+     * It returns the chemical or the stechiometric formula depending
+     * on the argument. The returned formula is a String reperesentation
+     * of the formula.
+     * 
+     * @param typeOfFormula
+     * @return
+     */
     public String getFormula(int typeOfFormula){
     	String formula="";
     	
@@ -254,36 +387,86 @@ public class ArrayFormula {
     	return formula;    	
     }
     
+    /**
+	 * It returns the chemical dictionary (for chemical formula)
+	 * as a Set view of the mappings contained in this map.
+	 * Typically to use it for iteration
+	 * 
+	 * For example:
+	 * 
+	 *  public void print() {
+     *    for (Map.Entry<String,BigDecimal> entry : getEntrySetChemical() ) {
+     *       String key = entry.getKey();
+     *       BigDecimal val = entry.getValue();
+     *       System.out.println(key+"=>"+val);
+     *   }
+     * }
+	 * 
+	 * @return
+	 */
     public Set<Map.Entry<String, BigDecimal>> getEntrySetChemical(){
     	return chemicalDict.entrySet();
     }
     
+    /**
+   	 * It returns the stechiometric dictionary (for stechiometric formula)
+   	 * as a Set view of the mappings contained in this map.
+   	 * Typically to use it for iteration
+ 	 * 
+	 * For example:
+	 * 
+	 *  public void print() {
+     *    for (Map.Entry<String,BigDecimal> entry : getEntrySetStechiometry() ) {
+     *       String key = entry.getKey();
+     *       BigDecimal val = entry.getValue();
+     *       System.out.println(key+"=>"+val);
+     *   }
+     * }
+   	 * 
+   	 * @return
+   	 */
     public Set<Map.Entry<String, BigDecimal>> getEntrySetStechiometry(){
     	return stechiometryDict.entrySet();
     }
     
-    // to illustrate the access with Map.entries
-    public void print() {
-        for (Map.Entry<String,BigDecimal> entry : chemicalDict.entrySet() ) {
-            String key = entry.getKey();
-            BigDecimal val = entry.getValue();
-            System.out.println(key+"=>"+val);
-        }
-
-    }
-    
+    /**
+     * Getter to return the number of atoms in a formula
+     * It is a BigDecimal, because temporaly it can stores the number of atoms 
+     * that sums the stechiometric representation before calculating
+     * the chemical representation
+     *  
+     * @return
+     */
     public BigDecimal getNumAtoms(){
 		return m_numAtoms;
 	}
 	
+    /**
+     * Getter for the number of atoms (i.e., symbols) in a formula
+     * @return
+     */
 	public int getNumElements(){
 		return m_numElements;
 	}
 
+	/**
+	 * Getter to retrieve the chemical formula in a dictionary
+	 * where each key is an atomic symbol, and the value is a BigDecimal
+	 * containing the integer sub-index of this symbol
+	 * 
+	 * @return 
+	 */
 	public TreeMap<String, BigDecimal> getParsedChemicalFormula(){
 		return chemicalDict;
 	}
 	
+	/**
+	 * Getter to retrieve the stechiometric formula in a dictionary
+	 * where each key is an atomic symbol, and the value is a BigDecimal
+	 * containing the decimal sub-index of this symbol
+	 * 
+	 * @return 
+	 */
 	public TreeMap<String, BigDecimal> getParsedStechiometryFormula(){
 		return stechiometryDict;
 	}

@@ -1,7 +1,8 @@
 package json_loader.error_handling;
 
 /**
- * Errores en un SGBD.
+ * DBMSError.java
+ * Enumeration containing the SQL errors that can happen in a RDBMS application
  * 
  * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
  * @author <a href="mailto:rmartico@ubu.es">Raúl Marticorena</a>
@@ -9,10 +10,10 @@ package json_loader.error_handling;
  * @since 1.0
  */
 public enum DBMSError {
-	FK_VIOLATED, // Violación de clave foránea
-	UNQ_VIOLATED, // Violación de clave primaria
-	NOT_EXISTS_SEQUENCE, // No existe la secuencia utilizada
-	// Añadir antes de esta línea si fuera necesario
+	FK_VIOLATED, // Foreign key violation
+	UNQ_VIOLATED, // Primary key violation
+	NOT_EXISTS_SEQUENCE, // The sequence does not exists
+	// Add more errors below if necessary
 	
 	UNKNOWN; // No determinado.
 }

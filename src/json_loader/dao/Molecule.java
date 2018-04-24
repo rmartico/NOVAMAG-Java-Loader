@@ -1,6 +1,5 @@
 package json_loader.dao;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,27 +9,39 @@ import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.Map;
 
-import javax.naming.NamingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import json_loader.error_handling.LoaderException;
+import json_loader.error_handling.PostgresTableError;
 import json_loader.error_handling.DBMSError;
 import json_loader.formulaparser.FormulaParser;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * Molecule.java
+ *  Class to represent a java object containing the molecule associated to a material
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Molecule {
 
 	
-	private static Logger l = null;		
-	
+	private static Logger l = LoggerFactory.getLogger(Molecule.class);		
 	
 	private FormulaParser m_formulaParser;
 	
 	private String m_formula; //Formula reordering atoms alphabetically
 	private String m_stechiometry; //Stecheometic formula;
 
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {			
 		
 		try{	
@@ -78,23 +89,43 @@ public class Molecule {
 
 	}
 	
-	public Molecule(){
-		l =	LoggerFactory.getLogger(Molecule.class);
-	}
-	
-	
+	/**
+	 * Returns a String representing the molecule formula for debugging purposes
+	 *  
+	 * @return 
+	 */
 	public String toString(){
 		return "Formula:"+m_formulaParser.getChemicalFormula();		
 	}
 	
+	/**
+	 * Returns the number of atoms in the molecule
+	 * 
+	 * @return
+	 */
 	public BigDecimal getNumAtoms(){
 		return m_formulaParser.getNumAtoms();
 	}
 	
+	/**
+	 * Getter that returns the String containing the formula
+	 * 
+	 * @return
+	 */
 	public String getFormula(){
 		return m_formula;
 	}
 	
+	/**
+	 * 
+	 * Setter for the String containing the formula
+	 * 
+	 * @param formula is the String containing the formula
+	 * @throws LoaderException if the formula is not well formed when parsed
+	 * (e.g., first letter of all atoms is not capitalized, there's things
+	 * distinct than numbers between atom symbols, ... ) It does not check if
+	 * a symbol really corresponds to an existing atom.
+	 */
 	public void setFormula(String formula) throws LoaderException{
 		
 		//Check formula syntax, reorder atoms & compute stoichiometric formula
@@ -103,8 +134,31 @@ public class Molecule {
 		m_stechiometry=m_formulaParser.getStechiometryFormula();
 	}
 	
+	/**
+	 * 
+	 * It tries to insert the molecule into the molecules SQL table
+	 * 	if the molecule already exists do nothing
+	 *  else
+	 *  	It tries to insert the molecule composition in the composition SQL table
+	 *  	If an atomic symbol of the molecule does not exists in the atoms SQL
+	 *  	table the corresponding foreign key violation is reinterpreted as 
+	 *  	LoaderException.NON_EXISTENT_ATOMIC_SYMBOL
+	 * 
+	 *  @param con is the database connection. If it's null a new connection is
+	 * 	created and also released at the end of the method
+	 *  Usually this param is not null, as this insertion is part of the item insertion
+	 *  in DBitem class, and both share the same transaction, so both share the same
+	 *  connection as well. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param doCommit is true if the insertions must be committed at the end
+	 *  of method execution, and it's false if not
+	 *  Usually this param is false, as this insertion is part of the item insertion
+	 *  in DBitem class. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @throws LoaderException if the molecule has an invented or incorrect atom symbol
+	 */
 	public void insert( Connection con, boolean doCommit ) 
-			throws LoaderException, IOException, NamingException{
+			throws LoaderException{
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -133,7 +187,7 @@ public class Molecule {
 				//System.err.println(e.getErrorCode());
 				//System.err.println(e.getSQLState());				
 				
-				if (p.getTableError().checkExceptionToCode( e, DBMSError.valueOf("UNQ_VIOLATED"))){
+				if ((new PostgresTableError()).checkExceptionToCode( e, DBMSError.valueOf("UNQ_VIOLATED"))){
 					//throw new LoaderException(LoaderException.MOLECULE_ALREADY_INSERTED);
 					existentMolecule=true;
 					con.rollback(savepoint);
@@ -142,7 +196,7 @@ public class Molecule {
 				}
 			}
 			
-			if (!existentMolecule){ //TODO sobra este if?? y la variable existentMolecule?
+			if (!existentMolecule){ 
 				ins_molecules = con.prepareStatement("INSERT INTO composition"
 					+ " (symbol,formula, numb_of_occurrences) VALUES ( ?, ?, ? );");
 				ins_molecules.setString(2, m_formula );			
@@ -160,15 +214,12 @@ public class Molecule {
 			
 		} catch (SQLException e) {
 			
-			p.undo(con);
-			
-			//Viola PK => formula ya existia => continuar
-			//Viola FK => elemento inexistente en la BD
+			p.undo(con);			
 			//System.err.println(e.getMessage());
 			//System.err.println(e.getErrorCode());
 			//System.err.println(e.getSQLState());
 			
-			if (p.getTableError().checkExceptionToCode( e, DBMSError.valueOf("FK_VIOLATED")) ){
+			if ((new PostgresTableError()).checkExceptionToCode( e, DBMSError.valueOf("FK_VIOLATED")) ){
 				throw new LoaderException(LoaderException.NON_EXISTENT_ATOMIC_SYMBOL);
 			}
 			

@@ -12,6 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import json_loader.error_handling.LoaderException;
 
+/**
+ * FormulaParser.java
+ *  Class that parses a formula and stores it inside as an ArrayFormula
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class FormulaParser {
 	
 	static int NO_FORMULA=0;
@@ -19,20 +27,20 @@ public class FormulaParser {
 	static int STECHIOMETRY_FORMULA=2; //Stechiometric formula, all weights sum 1
 	
 	
-	private static Logger l = null;	
+	private static Logger l = LoggerFactory.getLogger(FormulaParser.class);	
 	
 	
 	private ArrayFormula m_parsedFormula;
 
 	private String m_chemicalFormula;
 	private String m_stechiometryFormula;
-			
-	public FormulaParser(String formula) throws LoaderException{
-				l =	LoggerFactory.getLogger(FormulaParser.class);
-				
-				m_parsedFormula=parseFormula(formula);
-	}
-
+	
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		//Test Case 1
 				
@@ -49,8 +57,7 @@ public class FormulaParser {
 			System.out.println(formula);
 			fp = new FormulaParser(formula);
 			System.err.println(fp.getChemicalFormula());
-			System.err.println(fp.getStechiometryFormula());
-			
+			System.err.println(fp.getStechiometryFormula());			
 			
 			/*
 			formula="Fe3Ni2LiHO356Fe2"; //jmaudes Test TO_FIX... m_NumAtoms is incremented wrongly if a repeated symbol is added.
@@ -97,9 +104,40 @@ public class FormulaParser {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-
+	
 	}
 
+	/**
+	 * Constructor of the class
+	 * It parses a formula and stores it inside if correct as an ArrayFormula
+	 * If the formula is not well formed it throws an exception
+	 * 
+	 * @param formula is the formula to be parsed
+	 * @throws LoaderException
+	 */
+	public FormulaParser(String formula) throws LoaderException{				
+				m_parsedFormula=parseFormula(formula);
+	}
+
+	/**
+	 * It parses a formula and return the corresponding ArrayFormula
+	 * if it's well formed.
+	 * On the contrary it throws a LoaderException
+	 * 
+	 * @param formula
+	 * @return
+	 * @throws LoaderException
+	 * 	if the formula is empty or
+	 *  if its not a secuence of several groups of
+	 *  	1 capital letter + 0 or 1 lower case letter + a number
+	 *  	The number can be all integers (if it's a chemical formula) or
+	 *   	some decimal numbers can appear (for stechiometric formula representation)
+	 *  
+	 *	If the formula turns out to be an stechiometric one, the chemical formula
+	 *	is computed.
+	 *	If the formula turns out to be a chemical one, the stechiometric formula
+	 *	is computed.
+	 */
 	private ArrayFormula parseFormula( String formula ) throws LoaderException{
 		if ( formula.equals("") ) throw new LoaderException(LoaderException.BAD_FORMULA);
 		
@@ -181,29 +219,81 @@ public class FormulaParser {
 		return m_parsedFormula;
 	}
 	
+	/**
+	 * Getter for the number of atoms in the chemical formula
+	 * Note: It must be an integer, but was implemented for convenience
+	 * as BigDecimal to store it, because in an intermediate state
+	 * it can contains a decimal (i.e., when it is a stechiometric formula
+	 * and the chemical formula still wasn't computed) 
+	 * @return
+	 */
 	public BigDecimal getNumAtoms(){
 		return m_parsedFormula.getNumAtoms();
 	}
 	
+	/**
+	 * Getter that returns the number of differens species/atom symbols in the formula
+	 * @return
+	 */
 	public int getNumElements(){
 		return m_parsedFormula.getNumElements();
 	}
 	
+	/**
+	 * Getter that returns an String containing the chemical representation
+	 * of the formula (i.e. all the atoms sub-indexes are integer
+	 * @return
+	 */
 	public String getChemicalFormula(){
 		return m_chemicalFormula;
 	}
 	
+	/**
+	 * Getter that returns an String containing the stoichiometric representation
+	 * of the formula (i.e. all the atoms sub-indexes are decimal numbers
+	 * @return
+	 */
 	public String getStechiometryFormula(){
 		return m_stechiometryFormula;
 	}
 	
+	/**
+	 * It returns the chemical representation of the formula from the
+	 * ArrayFormula as a TreeMap.
+	 * Typically to use it for iteration
+	 * Example:
+	 * for (Map.Entry<String,BigDecimal> entry : 
+	 *		m_formulaParser.getParsedChemicalFormula().entrySet()) {...
+	 * 
+	 * @return
+	 */
 	public TreeMap<String,BigDecimal> getParsedChemicalFormula(){
 		return m_parsedFormula.chemicalDict;
 	}
+	
+	/**
+	 * It returns the stechiometric representation of the formula from the
+	 * ArrayFormula as a TreeMap.
+	 * Typically to use it for iteration
+	 * Example:
+	 * for (Map.Entry<String,BigDecimal> entry : 
+	 *		m_formulaParser.getParsedStechiometryFormula().entrySet()) {...
+	 * 
+	 * @return
+	 */
 	public TreeMap<String,BigDecimal> getParsedStechiometryFormula(){
 		return m_parsedFormula.stechiometryDict;
 	}
 	
+	/**
+	 * It returns the chemical representation of the formula from the
+	 * ArrayFormula as a Set view
+	 * Typically to use it for iteration
+	 * fp = new FormulaParser(formulaIni);		
+	 *    for (Map.Entry<String,BigDecimal> entry : fp.entrySet() ) {...
+	 * 
+	 * @return
+	 */
 	public Set<Entry<String,BigDecimal>> entrySet(){
 	    return m_parsedFormula.getEntrySetChemical();
 	}

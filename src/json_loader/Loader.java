@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.naming.NamingException;
-
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,17 +16,53 @@ import org.slf4j.LoggerFactory;
 import json_loader.dao.Attached_files;
 import json_loader.dao.DBitem;
 import json_loader.error_handling.LoaderException;
-import json_loader.utils.Cleaner;
 import json_loader.utils.ConnectionPool;
 import json_loader.utils.FileManager;
 import json_loader.utils.Unzipper;
 
+/**
+ * Loader.java
+ * 
+ * Main class for the project. See doc on main method.
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Loader {
 	
-	private static Logger l = null;	
+	private static Logger l = LoggerFactory.getLogger(Loader.class);;	
 	
-	public static void main(String[] args) throws Exception{
-		
+	/**	
+	 * Main method for this class.
+	 * 
+	 * @param args
+	 * It accepts an only one mandatory argument pointing the file to load.
+	 * The file can contain the information about one or more items (i.e., materials)
+	 * Such argument comes in two flavors;
+	 * 
+	 *  A) It could be a single json file.
+	 *   A json file can contain a single json object representing an only item/material
+	 *   or a json array representing several items/materials.
+	 *   
+	 *   It is assumed that related files ( png, cig, CONTCAR etc ...)
+	 *   are located in the same path than such json file.
+	 *   
+	 *   For example:
+	 *  java -cp "NOVAMAG-Java-Loader.jar;lib/*" json_loader.Loader F:\demo\FeNi_L10_v3.json
+	 *  
+	 *  B) And typically it also could be a zip file
+	 *  	The zip file can contain a subdirectories hierarchy
+	 *  	Each subdirectory can contain several subdirectories and/or several json files
+	 *  	If a json file is related to some additional files ( png, cig, CONTCAR etc ...)
+	 *      such files must be located in the same directory than such json file within the zip.
+	 *  
+	 *    For example:
+	 *  java -cp "NOVAMAG-Java-Loader.jar;lib/*" json_loader.Loader F:\demo\FeNi_L10_v3.zip  
+	 * 
+	 * The message from LoaderException.MISSING_ARG is printed if no command line argument is provided
+	 */
+	public static void main(String[] args){		
 		
 		try{
 			
@@ -47,11 +81,18 @@ public class Loader {
 				
 	}
 	
-	public Loader(){
-		l =	LoggerFactory.getLogger(Loader.class);
-	}
-	
-	//Return the number of materials succesfully loaded
+	/**	
+	 * Parse the file pointed by the argument, which is supposed to be a json
+	 * file or a zip file.
+	 * 
+	 * If the file is a zip, it unzip it and then process
+	 * all json files in the zip. It also deletes the temporary
+	 * directory used in the decompression.
+	 * 
+	 * @param fileName the path+file to be processed 
+	 * @throws IOException if the file can't be found or opened
+	 * @return the number of materials succesfully loaded
+	 */	
 	public int parseFile(String fileName) throws IOException{
 		int n=0;
 		
@@ -98,10 +139,30 @@ public class Loader {
 		return n;
 	}
 	
+	/**
+	 * Class that load a zip file containing materials
+	 * 
+	 * @param filename the path to the temp directory where was unzipped 
+	 * a zip file containing json files with several materials in each one.
+	 * @return the number of materials in the zip succesfully loaded
+	 * @throws IOException if the file can't be found or opened
+	 */
 	public int  processUnizipped(String filename) throws IOException{
 		return processUnizipped(filename,0);
 	}
 	
+	/**
+	 * It traverses recursively a subdirectory tree and load all json files it finds
+	 * into the database. Such subdirectory is a temporary one that comes from zip
+	 * decompression (a zip cointaining several materials).
+	 * 
+	 * @param filename the path to the temp directory where was unzipped 
+	 * a zip file containing json files with several materials in each one.
+	 * @param lastN is a counter of the number of materials in the zip succesfully loaded in 
+	 * the moment of this recursive invocation to the method
+	 * @return the number of materials in the zip succesfully loaded
+	 * @throws IOException if the file can't be found or opened
+	 */
 	private int  processUnizipped(String filename, int lastN) throws IOException{
 		File[] paths;
 		int n=0;
@@ -136,7 +197,15 @@ public class Loader {
 		return n;
 	}
 	
-	//It returns the number of materials succesfully loaded
+	/**
+	 * It loads a single json file with one or several materials
+	 * 
+	 * @param fileName the path+filename to a json file containing materials
+	 * @return the number of materials succesfully loaded (if the file contains
+	 * a json array, then it cointains one material per array element, if the file
+	 * contains a json object it only contains a single material)
+	 * @throws IOException if the file can't be found or opened
+	 */
 	public int parseJSONfile( String fileName ) throws IOException{
 		
 		InputStream is = new FileInputStream(fileName);
@@ -183,7 +252,7 @@ public class Loader {
         	
         	con.commit();
         		
-    	} catch (NamingException | SQLException | IOException e) {
+    	} catch (SQLException e) {
 			l.error(e.getMessage());
 			e.printStackTrace();
 		} finally {
@@ -195,6 +264,13 @@ public class Loader {
 	
 	}
 	
+	/**
+	 * 
+	 * Print a final report about the loading process
+	 * 
+	 * @param fileName is the name of the file that has been loaded
+	 * @param nRows is the number of items (i.e., materials) that have been loaded succesfully
+	 */
 	private void printReport(String fileName, int nRows){
 		System.out.println("---------------------------------------------------");
 		System.out.println("The file "+fileName+" was successfully loaded.");

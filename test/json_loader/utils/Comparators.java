@@ -80,7 +80,7 @@ public class Comparators {
 			rs = pstm.executeQuery();
 			
 			assertEqualsResultSet( rs, checksumArg);
-		} catch (SQLException | NamingException | IOException e){
+		} catch (SQLException e){
 			p.undo(con);
 			throw e;			
 		} finally {

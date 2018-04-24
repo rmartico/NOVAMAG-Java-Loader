@@ -4,6 +4,15 @@ import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * LoaderException.java
+ * Error codes for logical errors in the application
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @author <a href="mailto:rmartico@ubu.es">Raúl Marticorena</a>
+ * @version 1.0
+ * @since 1.0
+ */
 public class LoaderException extends SQLException{
 
 	private static final long serialVersionUID = 1L;
@@ -54,8 +63,14 @@ public class LoaderException extends SQLException{
 	private int code; // = -1;
 	private String msg;
 	
-	private static Logger l = null;
+	private static Logger l = LoggerFactory.getLogger(LoaderException.class);		
 	
+	/**
+	 * Constructor of the class
+	 * Given the error code the constructor assigns the corresponding error message
+	 * 
+	 * @param arg_code
+	 */
 	public LoaderException(int arg_code) {
 		code = arg_code;
 		msg = null;
@@ -165,8 +180,6 @@ public class LoaderException extends SQLException{
 			break;
 		
 		}
-		
-		l =	LoggerFactory.getLogger(LoaderException.class);			
 
 		l.error(msg);
 

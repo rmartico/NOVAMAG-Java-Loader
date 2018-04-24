@@ -1,15 +1,31 @@
 package json_loader.formulaparser;
 
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * FractFormula.java
+ *  Class that represents a molecule formula using fractions for each atom
+ *  instead of integers
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class FractFormula {
 	private String fract_formula;
 	private TreeMap<String, Fraction> components;	
 	
 	private int commonDen = 0;
 	
+	/**
+	 * Constructor of the class
+	 *  
+	 * @param arg_fract_formula is a String identifying the formula (i.e., a key)
+	 * 	For H2 it could be "H1/1 O1/2" 
+	 * @param arg_components is the list of pairs (atom, fraction) for each element 
+	 * (e.g., ("H", 1/1),("O", 1/2) for H2O)
+	 */
 	public FractFormula(String arg_fract_formula, 
 			TreeMap<String, Fraction> arg_components){
 		
@@ -75,10 +91,22 @@ public class FractFormula {
 		}
 	}
 
+	/**
+	 * Getter for the Greater Commn Denominator of
+	 * the fractions in the formula
+	 * @return
+	 */
 	public int getCommonDen(){
 		return commonDen;
 	}
 	
+	/**
+	 * String representation of the object for debugging purposes
+	 * @return an String with the key that identifies the formula 
+	 * (e.g., "H1/1 O1/2" for H2O), its Greater Common Denominator
+	 * (e.g., 2 for  "H1/1 O1/2") and the list of pairs (atom, fraction) for each element 
+	 * (e.g., ("H", 1/1),("O", 1/2) for "H1/1 O1/2")
+	 */
 	public String toString(){
 		String toReturn=fract_formula+"\n";
 		toReturn+="GCD="+commonDen+"\n";
@@ -91,6 +119,11 @@ public class FractFormula {
 		return toReturn;
 	}
 	
+	/**
+	 * Getter for the list of pairs (atom, fraction) for each element 
+	 * (e.g., ("H", 1/1),("O", 1/2) for "H1/1 O1/2")
+	 * @return
+	 */
 	public TreeMap<String, Fraction> getComponents(){
 		return components;
 	}

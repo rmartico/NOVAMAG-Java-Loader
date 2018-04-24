@@ -3,10 +3,18 @@ package json_loader.error_handling;
 import java.sql.SQLException;
 
 
-
+/**
+ * PostgresTableError.java
+ * Error codes for PostgreSQL
+ * 
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @author <a href="mailto:rmartico@ubu.es">Raúl Marticorena</a>
+ * @version 1.0
+ * @since 1.0
+ */
 public class PostgresTableError implements DBMSErrorUtil {	
 	
-	// Códigos de error en PostgresSQL
+	// PostgresSQL used error codes
 		private static final String UNQ_VIOLATED = "23505";
 		private static final String FK_VIOLATED = "23503";
 	
@@ -29,6 +37,7 @@ public class PostgresTableError implements DBMSErrorUtil {
 		return DBMSError.UNKNOWN;
 	}
 	
+	@Override
 	public boolean checkExceptionToCode(SQLException ex, DBMSError error) {
 		return new PostgresTableError().translate(ex.getSQLState()) == error;
 	}

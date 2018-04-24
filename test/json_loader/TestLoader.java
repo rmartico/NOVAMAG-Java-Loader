@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import json_loader.dao.Attached_files;
 import json_loader.utils.Cleaner;
 import json_loader.utils.Comparators;
 import json_loader.utils.ConnectionPool;

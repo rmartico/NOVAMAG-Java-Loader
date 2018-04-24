@@ -3,16 +3,28 @@ package json_loader.formulaparser;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.TreeMap;
 
+/**
+ * Fraction.java
+ *  Class to represent a numeric fraction
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Fraction {
 	 
 	 private int numerator;
 	 private int denominator;
-
+	 
+	 /**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		Fraction f=null;
 		BigDecimal epsilon=new BigDecimal(0.01);
 		
@@ -45,6 +57,13 @@ public class Fraction {
 
 	}
 	
+	/**
+	 * Constructor of the class.
+	 * Creates a new fraction by setting the numerator and denominator
+	 * 
+	 * @param numerator
+	 * @param denominator
+	 */
 	public Fraction(int numerator, int denominator) {
         if(denominator == 0) {
             throw new IllegalArgumentException("denominator is zero");
@@ -57,6 +76,16 @@ public class Fraction {
         this.denominator = denominator;
     }
 	
+	/**
+	 * It converts a BigDecimal into an approximated Fraction
+	 * 
+	 * @param value is the BigDecimal to be converted
+	 * @param accuracy is a value in range (0,1) such 
+	 * 		the BigDecimal division ||numerator/denominator||<=accuracy
+	 * 
+	 * @return the approximated fraction
+	 * @throws IllegalArgumentException when accuracy is out of range
+	 */
 	public static Fraction RealToFraction(BigDecimal value, BigDecimal accuracy)
 	{
 	    //if (accuracy <= 0.0 || accuracy >= 1.0)
@@ -113,48 +142,57 @@ public class Fraction {
 	    return new Fraction((n * denominator + numerator) * sign, denominator);
 	}
 	
-	/*
-	 * Returns a faction that approximates a BigDecimal.
+	
+	/**
 	 * 
-	 * Accuracy is the accuracy arg in RealToFraction
-	 * (i.e., it is used to limit the rounding error) 
-	 * and it is used to compute a candidate fraction
-	 * 
-	 * Once the candidate fraction is computed the denominator is checked
-	 * to be less than MAXDENOMINATOR
-	 * 
-	 * If it were bigger the bigdecimal is modified adding/substracting
-	 * an INCREMENT (10^-numMaxDecimals) during less than MAXTRIALS trials
-	 * 
-	 * If the denominator keeps being bigger than MAXDENOMINATOR, the original
-	 * fraction is returned
-	 * (TODO: Another variant is to return the fraction with the lower denominator
-	 * during the exploration)
-	 * 
-	 * IMPORTANT: MAXDENOMINATOR has to do with the total amount of atoms in the
-	 * molecule. If it is increased you can get more strange molecules having 
-	 * a high number atoms for some symbols (because rounding errors and/or impurities
-	 * in experimental data). So, it can't be high.
-	 * On the other hand, if it is so low, it is probably that for some molecules
-	 * the algorithm can't find a simplified approximate fraction, so it returns the
-	 * original candidate, that at the end is likely to be greater than MAXDENOMINATOR
-	 * 
-	 * That's why a tradeoff must be selected. We've choose MAXDENOMINATOR=20
-	 * because we think that it is not possible having materials with more than 20
-	 * atoms in its base cell. 
-	 * 
+	 * It computes a CandidateFractions object containing a list of fractions that
+	 * approximate well a BigDecimal value for a given accuracy
+	 * 	
+	 * @param value is the BigDecimal to be approximated by the candidate fractions
+	 * @param accuracy is an upper bound of the accuracy for the candidate fractions 
+	 * @return the list of candidate fractions
 	 */
-		
 	public static CandidateFractions RealToAproximateFraction(
 			BigDecimal value, BigDecimal accuracy){
-	/*public static TreeMap<String, Fraction> RealToAproximateFraction(
-			BigDecimal value, BigDecimal accuracy){*/
 		
+		/* Algorithm details:
+		 * 
+		 * Returns a faction that approximates a BigDecimal.
+		 * 
+		 * Accuracy is the accuracy arg in RealToFraction
+		 * (i.e., it is used to limit the rounding error) 
+		 * and it is used to compute a candidate fraction
+		 * 
+		 * Once the candidate fraction is computed the denominator is checked
+		 * to be less than MAXDENOMINATOR
+		 * 
+		 * If it were bigger the bigdecimal is modified adding/substracting
+		 * an INCREMENT (10^-numMaxDecimals) during less than MAXTRIALS trials
+		 * 
+		 * If the denominator keeps being bigger than MAXDENOMINATOR, the original
+		 * fraction is returned
+		 * (TODO: Another variant is to return the fraction with the lowest denominator
+		 * during the exploration)
+		 * 
+		 * IMPORTANT: MAXDENOMINATOR has to do with the total amount of atoms in the
+		 * molecule. If it is increased you can get more strange molecules having 
+		 * a high number atoms for some symbols (because rounding errors and/or impurities
+		 * in experimental data). So, it can't be high.
+		 * On the other hand, if it is so low, it is probably that for some molecules
+		 * the algorithm can't find a simplified approximate fraction, so it returns the
+		 * original candidate, that at the end is likely to have a denominator greater than
+		 * MAXDENOMINATOR
+		 * 
+		 * That's why a tradeoff must be selected. We've choose MAXDENOMINATOR=20
+		 * because we think that it is not possible having materials with more than 20
+		 * atoms in its base cell. 
+		 * 
+		 */	
+				
 		final BigDecimal INCREMENT =
 				 new BigDecimal(Math.pow(10, -ArrayFormula.NUMDECIMALS)); 
 		final int MAXTRIALS = 10;
-		final int MAXDENOMINATOR = 20;
-		
+		final int MAXDENOMINATOR = 20;	
 		
 		//TreeMap<String, Fraction> candidates = new TreeMap<String, Fraction>();
 		CandidateFractions candidates = new CandidateFractions();
@@ -194,26 +232,55 @@ public class Fraction {
 		return candidates;
 	}
 	
+	/**
+	 * String representation of a Fraction for debugging and testing purposes
+	 * @return
+	 */
 	public String toString(){
 		return ""+numerator+"/"+denominator;
 	}
 
+	/**
+	 * Getter of the numerator of a fraction (it's an integer)
+	 * @return
+	 */
 	public int getNumerator() {
         return this.numerator;
     }
 
+	/**
+	 *Getter of the denominator of a fraction (it's an integer)
+	 * @return
+	 */
     public int getDenominator() {
         return this.denominator;
     }
     
+    /**
+     * Setter of the numerator of a fraction (it's an integer)
+     * @param n
+     */
     public void setNumerator(int n){
     	this.numerator = n;
     }
     
+    /**
+     * 	Setter of the denominator of a fraction (it's an integer)
+     * 
+     * @param n
+     */
     public void setDenominator(int n){
     	this.denominator = n;
     }
     
+    /**
+     * Given 2 integers a and b representing 2 denominators,
+     * it returns the greater common denominator of them
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
     public static int greaterCommonDenominator(int a, int b) {
 	    BigInteger b1 = BigInteger.valueOf(a);
 	    BigInteger b2 = BigInteger.valueOf(b);

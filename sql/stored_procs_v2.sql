@@ -2,6 +2,13 @@
 Triggers and functions for auxiliar properties implementation
 */
 
+/*
+It returns the species of the atoms in this material. It is derived from “Chemical formula”.
+Example: Chemical formula =Fe3Sn1 -> Atomic species=Fe,Sn
+
+The procedure concatenates the symbols of the formula in the composition table separated by comas
+The procedure argument is the chemical formula
+*/
 CREATE OR REPLACE FUNCTION f_atomic_species(text) RETURNS text AS $$
 
 declare 
@@ -17,6 +24,13 @@ end;
 
 $$ LANGUAGE plpgsql;
 
+/*
+It returns the number of species in the system (e.g., binary = 2, ternary = 3, etc.). It is derived from “Chemical formula”.
+Example: Chemical formula =Fe3Sn1 --> Species count=2
+
+The procedure computes a select-count of the symbols of the formula in the composition table
+The procedure argument is the chemical formula
+*/
 CREATE OR REPLACE FUNCTION f_species_count(text) RETURNS int AS $$
 declare 
 	result int;
@@ -31,6 +45,19 @@ end;
 
 $$ LANGUAGE plpgsql;
 
+/*
+Ir returns the lattice system, which is derived from “Space group”
+	Lattice System	Space group
+	TRI				1,2
+	MON				3-15
+	ORT				16-74
+	TET				75-142
+	RHO				146,148,155,160,161,166,167
+	HEX				143-145,147,149-154,156-159, 162-165,168-194
+	CUB				195-230
+
+	The procedure argument is intended to be the space group
+*/
 CREATE OR REPLACE FUNCTION f_lattice_system(int) RETURNS text AS $$
 declare 
 	result text;
@@ -61,6 +88,26 @@ end;
 
 $$ LANGUAGE plpgsql;
 
+/*
+It returns the unit cell atom count, which is the number of atoms in the unit cell (integer number).
+It is derived from “Chemical formula”, just summing the number of atoms.
+Example: Chemical formula =Fe3Sn1 -> Unit cell atom count=4
+
+The procedure argument is the chemical formula
+
+The inner subselect get the formula sub-indexes as text
+For example:
+select regexp_replace(unnest((regexp_split_to_array('Fe3Sn1', '[A-Z]'))[2:]), '[a-z]','') numb;
+returns
+
+numb
+------
+'3'
+'1'
+
+Then the outer select cast them to integers (if no sub-index then 1 is assiged)
+
+*/
 CREATE OR REPLACE FUNCTION f_unit_cell_atom_count(text) RETURNS int AS $$
 declare 
 	result int;
@@ -77,6 +124,17 @@ end;
 
 $$ LANGUAGE plpgsql;
 
+/*
+Trigger body of the trigger t_auxiliar_props
+It calls the functions above to update the fields
+atomic_species, species_count, lattice_system and unit_cell_atom_count
+of the items table
+
+It also updates in the items table other fields computed as ratios:
+atom_volume: Atom volume = “Unit cell volume”/ ”Unit cell atom count”.
+atomic_energy: Atomic energy = Unit cell energy”/ “Unit cell atom count
+atomic_formation_enthalpy: Atomic formation enthalpy = “Unit cell formation enthalpy”/“Unit cell atom count”
+*/
 create or replace function f_auxiliar_props() returns trigger as $$
 	begin
 		
@@ -99,19 +157,47 @@ create or replace function f_auxiliar_props() returns trigger as $$
 $$
 LANGUAGE plpgsql;
 
+drop trigger if exists t_auxiliar_props on items;
+
+/*
+Trigger that calls the functions above to update the fields
+atomic_species, species_count, lattice_system and unit_cell_atom_count
+of the items table
+
+It also updates in the items table other fields computed as ratios:
+atom_volume: Atom volume = “Unit cell volume”/ ”Unit cell atom count”.
+atomic_energy: Atomic energy = Unit cell energy”/ “Unit cell atom count
+atomic_formation_enthalpy: Atomic formation enthalpy = “Unit cell formation enthalpy”/“Unit cell atom count”
+*/
+create trigger t_auxiliar_props
+before insert or update of formula, compound_space_group, unit_cell_volume, unit_cell_energy, unit_cell_formation_enthalpy on items
+for each row
+execute procedure f_auxiliar_props();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_auxiliar_props
+It raises an exception if someone tries to change the field Atomic_species manually
+*/
 create or replace function f_no_change_atomic_species() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Atomic_species is a read-only attribute. So, cannot be updated';
 	end;
 $$
 LANGUAGE plpgsql;
-	
+
 drop trigger if exists t_no_change_auxiliar_props on items;
+
+/*
+Trigger that raises an exception if someone tries to change the field Atomic_species manually
+*/
 create trigger t_no_change_auxiliar_props
 before update of atomic_species on items for statement
 execute procedure f_no_change_atomic_species();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_species_count
+It raises an exception if someone tries to change the field species_count manually
+*/
 create or replace function f_no_change_species_count() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Species_count is a read-only attribute. So, cannot be updated';
@@ -120,10 +206,17 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_species_count on items;
+/*
+Trigger that raises an exception if someone tries to change the field species_count manually
+*/
 create trigger t_no_change_species_count
 before update of species_count on items for statement
 execute procedure f_no_change_species_count();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_lattice_system
+It raises an exception if someone tries to change the field lattice_system manually
+*/
 create or replace function f_no_change_lattice_system() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Lattice_system is a read-only attribute. So, cannot be updated';
@@ -132,10 +225,17 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_lattice_system on items;
+/*
+Trigger that raises an exception if someone tries to change the field lattice_system manually
+*/
 create trigger t_no_change_lattice_system
 before update of lattice_system on items for statement
 execute procedure f_no_change_lattice_system();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_unit_cell_atom_count
+It raises an exception if someone tries to change the field unit_cell_atom_count manually
+*/
 create or replace function f_no_change_unit_cell_atom_count() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Unit_cell_atom_count is a read-only attribute. So, cannot be updated';
@@ -144,10 +244,17 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_unit_cell_atom_count on items;
+/*
+Trigger that raises an exception if someone tries to change the field unit_cell_atom_count manually
+*/
 create trigger t_no_change_unit_cell_atom_count
 before update of unit_cell_atom_count on items for statement
 execute procedure f_no_change_unit_cell_atom_count();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_atom_volume
+It raises an exception if someone tries to change the field atom_volume manually
+*/
 create or replace function f_no_change_atom_volume() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Atom_volume is a read-only attribute. So, cannot be updated';
@@ -156,10 +263,17 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_atom_volume on items;
+/*
+Trigger that raises an exception if someone tries to change the field atom_volume manually
+*/
 create trigger t_no_change_atom_volume
 before update of atom_volume on items for statement
 execute procedure f_no_change_atom_volume();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_atomic_energy
+It raises an exception if someone tries to change the field atomic_energy manually
+*/
 create or replace function f_no_change_atomic_energy() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Atomic_energy is a read-only attribute. So, cannot be updated';
@@ -168,10 +282,17 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_atomic_energy on items;
+/*
+Trigger that raises an exception if someone tries to change the field atomic_energy manually
+*/
 create trigger t_no_change_atomic_energy
 before update of atomic_energy on items for statement
 execute procedure f_no_change_atomic_energy();
 ---------------------------------------------------------------------------------------------
+/*
+Trigger body of t_no_change_atomic_formation_enthalpy
+It raises an exception if someone tries to change the field atomic_formation_enthalpy manually
+*/
 create or replace function f_no_change_atomic_formation_enthalpy() returns trigger as $$
 	begin
 		RAISE EXCEPTION 'Atomic_formation_enthalpy is a read-only attribute. So, cannot be updated';
@@ -180,17 +301,13 @@ $$
 LANGUAGE plpgsql;
 	
 drop trigger if exists t_no_change_atomic_formation_enthalpy on items;
+/*
+Trigger that raises an exception if someone tries to change the field atomic_formation_enthalpy manually
+*/
 create trigger t_no_change_atomic_formation_enthalpy
 before update of atomic_formation_enthalpy on items for statement
 execute procedure f_no_change_atomic_formation_enthalpy();
 ---------------------------------------------------------------------------------------------
-
-
-drop trigger if exists t_auxiliar_props on items;
-create trigger t_auxiliar_props
-before insert or update of formula, compound_space_group, unit_cell_volume, unit_cell_energy, unit_cell_formation_enthalpy on items
-for each row
-execute procedure f_auxiliar_props();
 
 /*Test case everything is OK
 

@@ -3,7 +3,9 @@ package json_loader.error_handling;
 import java.sql.SQLException;
 
 /**
- * Utilidad para el tratamiento de errores en bases de datos.
+ * DBMSErrorUtil.java
+ * Utility to translate SQL error codes returned by the DBMS into
+ * codes in DBMSError enumeration
  * 
  * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
  * @author <a href="mailto:rmartico@ubu.es">Raúl Marticorena</a>
@@ -14,29 +16,33 @@ import java.sql.SQLException;
 public interface DBMSErrorUtil {
 	
 	/**
-	 * Traduce el código de error numérico al valor de error correspondiente
-	 * en el SGBD que se esté utilizando.
+	 * It translates the integer for the error code returned
+	 * by a DBMS for a given error, to the error represented by DBMSError enumeration
 	 * 
-	 * @param errorSGBD número devuelto por el SGBD
-	 * @return el tipo de error correspondiente
+	 * @param errorSGBD SQL error code returned by the DBMS
+	 * @return the corresponding DBMSError enumeration element
 	 */
 	DBMSError translate(int errorSGBD);
 	
 	/**
-	 * Traduce el código de error numérico al valor de error correspondiente
-	 * en el SGBD que se esté utilizando.
+	 * It translates the String for the SQLState returned
+	 * by a DBMS for a given error, to the error represented by DBMSError enumeration
 	 * 
-	 * @param errorSGBD SQLState devuelto por el SBD
-	 * @return el tipo de error correspondiente
+	 * @param errorSGBD SQLState returned by the DBMS
+	 * @return the corresponding DBMSError enumeration element
 	 */
 	DBMSError translate(String errorSGBD);
 	
 	/**
-	 * Comprueba si la excepción contiene un cierto código de error.
+	 * Test if the exception code matches to a given candidate error 
+	 * represented by the DBMSError enumeration
 	 * 
-	 * @param ex excepción con código interno de la base de datos
-	 * @param error error en la base de datos
-	 * @return true si coinciden, false en caso contrario
+	 * @param ex is the DBMS exception having an error code which is distinct 
+	 * 		for each DBMS 
+	 *
+	 * @param error represented by DBMSError enumeration
+	 *            
+	 * @return true if they match, false if not
 	 */
 	boolean checkExceptionToCode(SQLException ex, DBMSError error);	
 

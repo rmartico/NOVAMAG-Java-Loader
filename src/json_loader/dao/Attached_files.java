@@ -24,18 +24,34 @@ import json_loader.error_handling.LoaderException;
 import json_loader.utils.Cleaner;
 import json_loader.utils.ConnectionPool;
 
+/**
+ * Attached_files.java
+ *  Class to represent a java object containing the list of files a material
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class Attached_files {
 	
 	private static String curr_path=Config.TEMP_FOLDER;
 	
 	private long lastMafId;
-	private static Logger l = null;
+	private static Logger l = LoggerFactory.getLogger(Attached_files.class);
 	
 	private String	 m_file_type;
 	private boolean  m_isText;
 	private JSONArray	 m_info;
 	private JSONArray m_files;
-		
+	
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 * @throws IOException
+	 * @throws NamingException
+	 */
 	public static void main(String[] args) throws IOException, NamingException {
 		
 		 String fileName="data_for_tests/dao.attached_files/Fe12Ge6_#164_1.json";
@@ -138,30 +154,70 @@ public class Attached_files {
 
 	}
 	
+	/**
+	 * Setter for the path where the attached files are
+	 * 
+	 * @param thePath
+	 */
 	public static void setCurrPath(String thePath){
 		curr_path=thePath;
 	}
 	
-	public void setInfo(JSONArray theInfo){
-		m_info=theInfo;
-	}
-	
+	/**
+	 * Setter for the crystallographic data (metadata format CIF, CONTCAR.vasp, …), 
+	 * property values versus temperature, property values versus external magnetic field,
+	 *  interatomic potentials, figures,
+	 *  Example: ["Fe10Ta2_#129_1.cif", "CONTCAR_Fe10Ta2_#129_1"]
+	 *  
+	 * @param ja is a a json array with a list of file names (the path is assumed that is the
+	 * same path than the json file that references them)
+	 */
 	public void setAttached_files(JSONArray ja){
 		m_files=ja;
 	}
 	
+	/**
+	 * Setter for the attached files info providing a short description 
+	 * of the attached files, that is, which information contain and how it was obtained. 
+	 *
+	 * @param ja is a json array with the same number of elements than the attached files json array
+	 */	
 	public void setAttached_files_info(JSONArray ja){
 		m_info=ja;
 	}
 	
-	
+	/**
+	 * Class constructor
+	 * It sets the foreign key that references items table
+	 * 
+	 * @param itemKey is the items.mafId value of the material related
+	 * with the list of files in the Attached_files object
+	 */
 	public Attached_files(long itemKey){
-			l =	LoggerFactory.getLogger(Attached_files.class);
 			lastMafId = itemKey;			
 	}	
 	
+	/**
+	 * Makes the necessary SQL insertions in the attached_files table
+	 * to associate the list of files in the Attached_files object to its
+	 * item
+	 * 
+	 * @param con is the database connection. If it's null a new connection is
+	 * 	created and also released at the end of the method
+	 *  Usually this param is not null, as this insertion is part of the item insertion
+	 *  in DBitem class, and both share the same transaction, so both share the same
+	 *  connection as well. However you can set it to true for debugging and testing
+	 *  purposes.
+	 * @param doCommit is true if the insertions must be committed at the end
+	 *  of method execution, and it's false if not
+	 *  Usually this param is false, as this insertion is part of the item insertion
+	 *  in DBitem class. However you can set it to true for debugging and testing
+	 *  purposes.
+	 *  
+	 *  @throws LoaderException when a referenced file is not found in the expected path
+	 */
 	public void insert( Connection con, boolean doCommit)
-			throws LoaderException, IOException, NamingException{
+			throws LoaderException{
 		
 		
 		ConnectionPool p = null;
@@ -227,20 +283,33 @@ public class Attached_files {
 			if (doCommit)
 				con.commit();
 		
-		} catch (SQLException e) {
-			//TODO rename in case duplicate name => unq in table
-			
+		} catch (SQLException| IOException e) {
 			p.undo(con);
 			l.error(e.getMessage());
 			
 		} finally {			
 			p.close(pst_ins_file);
 			if (closeConnection) p.close(con);
-			if (fis!=null) fis.close();
-		}
-		
+			if (fis!=null)
+				try{
+					fis.close();
+				} catch (IOException e1){
+					l.error(e1.getMessage());
+				}
+		}		
 	}
 	
+	/**
+	 * 
+	 * Setter for m_file_type & m_isText
+	 * 	m_file_type is the type of an attached file.
+	 * 		Usually it matches with its extension.
+	 * 		However there're files without extension like CONTCAR
+	 *  m_isText = true when the file is a text file, and false otherwise
+	 * 
+	 * @param f is the String containing the file name
+	 * @throws LoaderException if the file type is not recognized by the application
+	 */
 	private void deduceFileType(String f) throws LoaderException{
 				
 		FileTypes fp = FileTypes.getInstance();

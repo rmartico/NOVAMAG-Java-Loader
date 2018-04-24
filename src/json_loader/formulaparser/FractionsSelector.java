@@ -4,13 +4,28 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
+/**
+ * FractionsSelector.java
+ *  Class that computes a set of candidate fractions for each atom
+ *   that approximate well a given BigDecimal representing its stechiometric composition,
+ *   and then picks the best candidate fractions for getting
+ *   the corresponding molecule formula
+ *  
+ * @author <a href="mailto:jmaudes@ubu.es">Jesús Maudes</a>
+ * @version 1.0
+ * @since 1.0 
+ */
 public class FractionsSelector {
 	
 	private TreeMap<String, CandidateFractions> allF;//All fractions
-	private TreeMap<String, TreeMap<String,Fraction>> allC;//All combinations
+	private TreeMap<String, TreeMap<String,Fraction>> allC;//All combinations	
 
-	
-
+	/**
+	 * 
+	 * main method containing examples about using this class
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		TreeMap<String, CandidateFractions> allFractions = new TreeMap<String, CandidateFractions>();
 		CandidateFractions cs = null;
@@ -60,23 +75,53 @@ public class FractionsSelector {
 		
 	}
 	
+	/**
+	 * Constructor of the class
+	 */
 	public FractionsSelector(){
 		allF = new TreeMap<String, CandidateFractions>();
 		allC = new TreeMap<String, TreeMap<String,Fraction>>();
 	}
 	
+	/**
+	 * Setter to assign a list of candidate fractions to an element (i.e., atom)
+	 * 
+	 * @param allF is a TreeMap<String, CandidateFractions> where the String
+	 * represents an atom, and the CandidateFrations is the list of fractions
+	 * that approximate well its stechiometry in the molecule.
+	 */
 	public void setAllF(TreeMap<String, CandidateFractions> allF) {
 		this.allF = allF;
 	}
 	
+	/**
+	 * Getter to retrieve a list of candidate fractions to an element (i.e., atom)
+	 * 
+	 * @return a TreeMap<String, CandidateFractions> where the String
+	 * represents an atom, and the CandidateFrations is the list of fractions
+	 * that approximate well its stechiometry in the molecule.
+	 */
 	public TreeMap<String, CandidateFractions> getAllF(){
 		return allF;
 	}
 	
+	/**
+	 * Getter to retrieve a list of candidate formulas to represent a molecule
+	 * In these candidate formulas the quantity for each atom is represented
+	 * by a fraction
+	 * 
+	 * @return 
+	 */
 	public  TreeMap<String, TreeMap<String,Fraction>> getAllC(){
 		return allC;
 	}
 	
+	/**
+	 * It gets the first element of the list of candidate formulas
+	 * It is used to compute recursively all combinations of fractions
+	 * in computeAllCombinations method
+	 * @return the first element of the formula along with its list of candidate fractions
+	 */
 	FractionsSelector getFirst(){
     	CandidateFractions cf=null;
     	String key=null;
@@ -95,6 +140,12 @@ public class FractionsSelector {
     	return toReturn;
     }
 
+	/**
+	 * It gets all the elements but the first of the list of candidate formulas
+	 * It is used to compute recursively all combinations of fractions
+	 * in computeAllCombinations method
+	 * @return a list of elements of the formula along with their lists of candidate fractions
+	 */
 	FractionsSelector getTail(){
     	int i=0;
     	FractionsSelector tail= new FractionsSelector();
@@ -112,7 +163,10 @@ public class FractionsSelector {
     	return tail;
     }
 	
-	
+	/**
+	 * It computes all possible combinations of candidate fractions
+	 * for each element in a formula
+	 */
 	public void computeAllCombinations(){
     	    	
         if (allF.size()==1){//Non-recursive exit
@@ -166,14 +220,46 @@ public class FractionsSelector {
     	}
 	}
 	
+	/**
+	 * It adds a new candidate fraction to an element
+	 * It is supposed this fraction approximates well
+	 * the stechiometric presence of this element in the molecule
+	 * 
+	 * @param key is the element
+	 * @param value is the new candidate fraction
+	 */
 	private void putFractions( String key, CandidateFractions value){
 		allF.put(key, value);
 	}
 	
+	/**
+	 * It adds a new combination of candidate fractions
+	 * (where each fraction represents the stechiometric presence
+	 *  of an element in the molecule)
+	 * to the list of candidate formulas
+	 * 
+	 * @param key a String representing the molecule with
+	 * the fractions (e.g., "H1/1 O1/2" for H2O)
+	 * This representation identifies uniquely this candidate molecule
+	 * within the list of candidate molecules
+	 * @param value is the list of pairs (atom, fraction) for each element
+	 * in the candidate molecule
+	 * (e.g., ("H", 1/1),("O", 1/2) for H2O)
+	 */
 	private void putCombination ( String key, TreeMap<String,Fraction> value){
 		allC.put(key, value);
 	}
 	
+	/**
+	 * String representation of the object for debugging purposes
+	 * @return the String. It has 2 sections
+	 * 	In the first section (i.e., ALL FRACTIONS) each element in the molecule is listed
+	 *  along with its candidate fractions that approximate well its stechiometric
+	 *  presence in the molecule
+	 *  In the second secion (i.e., ALL COMBINATIONS), is showed the combinations of each
+	 *   candidate fraction of an atom with the other candidate fractions of the atoms 
+	 *   in the same molecule
+	 */
 	public String toString(){
 		String toReturn="ALL FRACTIONS______________"; 
 		toReturn += "size: "+allF.size()+"\n";
@@ -203,6 +289,14 @@ public class FractionsSelector {
 		return toReturn;
 	}
 	
+	/**
+	 * It selects from all computed combinations of atoms
+	 * the combination with the lowest Greater Common Denominator (GCD),
+	 * as it is the simplest molecule representation according 
+	 * a given stechiometry
+	 * 
+	 * @return a FractFormula object representing the best candidate formula
+	 */
 	public FractFormula getLowestDenominator(){
 		FractFormula toReturn=null;
 		

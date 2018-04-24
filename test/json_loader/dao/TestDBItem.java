@@ -9,22 +9,13 @@ import javax.naming.NamingException;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import json_loader.JSONparser;
 import json_loader.utils.Cleaner;
 import json_loader.utils.Comparators;
 
 public class TestDBItem {
-	private static Logger l = null;
-	
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		l =	LoggerFactory.getLogger(TestDBItem.class);
-	}
 	
 	@Test
 	public void testInsertOK() throws NamingException, IOException, SQLException {
