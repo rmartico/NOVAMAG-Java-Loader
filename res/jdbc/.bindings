@@ -1,0 +1,22 @@
+#This file is used by the JNDI FSContext.
+#Tue Apr 24 14:08:36 CEST 2018
+novamag/RefAddr/2/Type=user
+novamag/RefAddr/0/Encoding=String
+novamag/RefAddr/5/Encoding=String
+novamag/RefAddr/3/Content=postgres
+novamag/RefAddr/1/Content=postgres
+novamag/RefAddr/3/Type=password
+novamag/RefAddr/3/Encoding=String
+novamag/RefAddr/4/Type=dataSourceName
+novamag/FactoryName=org.postgresql.ds.common.PGObjectFactory
+novamag/RefAddr/5/Type=maxConnections
+novamag/RefAddr/1/Encoding=String
+novamag/RefAddr/5/Content=10
+novamag/RefAddr/4/Content=Novamag Loader Datasource
+novamag/RefAddr/2/Content=postgres
+novamag/RefAddr/0/Content=localhost
+novamag/RefAddr/4/Encoding=String
+novamag/RefAddr/0/Type=serverName
+novamag/RefAddr/2/Encoding=String
+novamag/RefAddr/1/Type=databaseName
+novamag/ClassName=org.postgresql.ds.PGPoolingDataSource

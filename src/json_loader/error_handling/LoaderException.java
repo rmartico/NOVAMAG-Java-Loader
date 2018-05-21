@@ -18,27 +18,29 @@ public class LoaderException extends SQLException{
 	private static final long serialVersionUID = 1L;
 	
 	
-	//Command line exceptions
+	//Command line exceptions and fatal exceptions
 	public static final int MISSING_ARG = 0;
+	public static final int INTERRUPTED_BACK_UP = 1;
+	public static final int UNSUPPORTED_OS = 2;
 	
 	//Material_features Table exceptions
-	public static final int INCORRECT_TYPE = 1;
+	public static final int INCORRECT_TYPE = 11;
 	
-	public static final int LATTICE_PARAMETERS_DISTINCT_THAN_3 = 2;
-	public static final int A_LATTICE_PARAMETER_IS_NOT_NUMERIC = 3;
-	public static final int LATTICE_PARAMETER_OUT_OF_RANGE = 4;
+	public static final int LATTICE_PARAMETERS_DISTINCT_THAN_3 = 12;
+	public static final int A_LATTICE_PARAMETER_IS_NOT_NUMERIC = 13;
+	public static final int LATTICE_PARAMETER_OUT_OF_RANGE = 14;
 	
-	public static final int LATTICE_ANGLES_DISTINCT_THAN_3 = 5;
-	public static final int A_LATTICE_ANGLE_IS_NOT_NUMERIC = 6;
-	public static final int LATTICE_ANGLE_OUT_OF_RANGE = 7;
+	public static final int LATTICE_ANGLES_DISTINCT_THAN_3 = 15;
+	public static final int A_LATTICE_ANGLE_IS_NOT_NUMERIC = 16;
+	public static final int LATTICE_ANGLE_OUT_OF_RANGE = 17;
 	
-	//public static final int ATOMIC_POSITIONS_INCOMPLETE = 8;	
-	public static final int AN_ATOMIC_POSITION_IS_NOT_NUMERIC = 9;
-	public static final int ATOMIC_POSITIONS_OUT_OF_RANGE = 10;
-	public static final int MORE_ATOMIC_POSITIONS_THAN_ATOMS = 11;
-	public static final int ATOMIC_POSITIONS_EMPTY = 12;
-	public static final int ANISOTROPY_ENENRGY_TYPE_INCORRECT = 13;
-	public static final int KIND_OF_ANISOTROPY_INCORRECT = 14;	
+	//public static final int ATOMIC_POSITIONS_INCOMPLETE = 18;	
+	public static final int AN_ATOMIC_POSITION_IS_NOT_NUMERIC = 19;
+	public static final int ATOMIC_POSITIONS_OUT_OF_RANGE = 20;
+	public static final int MORE_ATOMIC_POSITIONS_THAN_ATOMS = 21;
+	public static final int ATOMIC_POSITIONS_EMPTY = 22;
+	public static final int ANISOTROPY_ENENRGY_TYPE_INCORRECT = 23;
+	public static final int KIND_OF_ANISOTROPY_INCORRECT = 24;	
 	
 	//Parsing formula exceptions
 	//public static final int NOT_ALLOWED_CHAR_IN_FORMULA = 100;
@@ -58,6 +60,13 @@ public class LoaderException extends SQLException{
 	//Attached files exceptions
 	public static final int MISSING_ATTACHED_FILE = 300;
 	public static final int NOT_ALLOWED_FILE_TYPE = 301;
+	
+	//Config file exceptions
+	public static final int MISSING_CONFIG_FILE = 400;
+	public static final int BAD_CONFIG_FILE = 401;
+	public static final int MISSING_TEMP_FOLDER = 410;
+	public static final int MISSING_BACKUP_FOLDER = 411;
+	public static final int MISSING_PG_HOME_FOLDER = 412;
 	
 	
 	private int code; // = -1;
@@ -80,6 +89,14 @@ public class LoaderException extends SQLException{
 			msg = "The command line usage requires the name of the JSON file as first argument";
 			break;
 		
+		case INTERRUPTED_BACK_UP:
+			msg = "The backup process has been aborted. Check the doBackup script is in the res folder and has excution permissions.";
+			break;
+			
+		case UNSUPPORTED_OS:
+			msg = "This application is only runnable in Windows or Unix SOps.";
+			break;
+			
 		case INCORRECT_TYPE:
 			msg = "Approach value must be 'experimental' or 'theory'";
 			break;
@@ -177,6 +194,26 @@ public class LoaderException extends SQLException{
 			
 		case NOT_ALLOWED_FILE_TYPE:	
 			msg = "Json file references a file type the application can't cope with";
+			break;
+			
+		case MISSING_CONFIG_FILE:
+			msg="The config.json file is missing. Please allocate it in the 'res' folder";
+			break;
+			
+		case BAD_CONFIG_FILE:
+			msg="Unable to read res/config,json file. Please check is a JSON encoded in utf-8 file.";
+			break;
+			
+		case MISSING_TEMP_FOLDER:
+			msg = "Unnable to unzip file. Missing TEMP_FOLDER entry in config.json file or the TEMP_FOLDER does not exists";
+			break;
+			
+		case MISSING_BACKUP_FOLDER:
+			msg = "Unnable to perform backups. Missing BACKUP_FOLDER entry in config.json file or the BACKUP_FOLDER does not exists";
+			break;
+			
+		case MISSING_PG_HOME_FOLDER:
+			msg = "Unnable to perform backups. Missing PG_HOME entry in config.json file or the PG_HOME folder does not exists";
 			break;
 		
 		}

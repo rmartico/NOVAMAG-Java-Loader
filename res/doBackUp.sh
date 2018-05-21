@@ -1,0 +1,1 @@
+$PG_HOME''pg_dump -v -U postgres -d postgres -n public -a -E utf8 -b --inserts --disable-triggers -f $1

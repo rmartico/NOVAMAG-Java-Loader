@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import json_loader.utils.Cleaner;
 import json_loader.utils.Comparators;
+import json_loader.utils.Config;
 import json_loader.utils.ConnectionPool;
 import json_loader.utils.FileManager;
 
@@ -44,8 +45,10 @@ public class TestLoader {
 		Cleaner.insertAtom("Mn");
 		Cleaner.insertAtom("Sb");
 		Cleaner.insertAtom("Sn");
-		Cleaner.insertAtom("Ta");	
+		Cleaner.insertAtom("Ta");
 		
+		//Load configuration from res/config.json file
+		Config.loadConfig();		
 		FileManager.purgeDirectory(Config.TEMP_FOLDER);
 	}
 

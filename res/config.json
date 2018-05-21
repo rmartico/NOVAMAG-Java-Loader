@@ -1,0 +1,5 @@
+{
+	"TEMP_FOLDER": "temp/",
+	"BACKUP_FOLDER": "backups/",
+	"PG_HOME": "C:\\Program Files\\PostgreSQL\\9.6\\bin\\"
+}

@@ -220,7 +220,7 @@ public class Authors {
 	private void insertAuthor( String theAuthor, Connection con, boolean doCommit )
 			throws SQLException{
 		
-			ConnectionPool p = null;
+		ConnectionPool p = null;
 			boolean closeConnection=false;
 		
 			PreparedStatement ins_author=null;

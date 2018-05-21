@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import json_loader.dao.Attached_files;
 import json_loader.dao.DBitem;
 import json_loader.error_handling.LoaderException;
+import json_loader.utils.Backup;
+import json_loader.utils.Config;
 import json_loader.utils.ConnectionPool;
 import json_loader.utils.FileManager;
 import json_loader.utils.Unzipper;
@@ -62,7 +64,7 @@ public class Loader {
 	 * 
 	 * The message from LoaderException.MISSING_ARG is printed if no command line argument is provided
 	 */
-	public static void main(String[] args){		
+	public static void main(String[] args){
 		
 		try{
 			
@@ -70,10 +72,14 @@ public class Loader {
 				throw new LoaderException(LoaderException.MISSING_ARG);
 			
 			String fileName = args[0]; 
+			//Load configuration from res/config.json file
+			Config.loadConfig();
+			Backup.doBackup();
 			
 			Loader l = new Loader();							
 			l.parseFile(fileName);
 			
+			Backup.doBackup();
 			
 		} catch ( Exception e ){
 			l.error(e.getMessage());			

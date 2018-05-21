@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import json_loader.Config;
-
 /**
  * FileManager.java
  * 
@@ -58,6 +56,10 @@ public class FileManager {
 		File[] paths;
 		try{
 			paths = dir.listFiles();
+			
+			if (paths==null)
+				//The folder is already clean
+				return;
 			
 			 for(File f:paths) {
 				 if (f.isDirectory()) 

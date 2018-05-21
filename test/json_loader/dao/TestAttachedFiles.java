@@ -24,9 +24,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import json_loader.Config;
 import json_loader.JSONparser;
 import json_loader.utils.Cleaner;
+import json_loader.utils.Config;
 import json_loader.utils.ConnectionPool;
 import json_loader.utils.FileManager;
 
