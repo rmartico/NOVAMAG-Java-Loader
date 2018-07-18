@@ -9,6 +9,8 @@ Example: Chemical formula =Fe3Sn1 -> Atomic species=Fe,Sn
 The procedure concatenates the symbols of the formula in the composition table separated by comas
 The procedure argument is the chemical formula
 */
+\connect novamag
+
 CREATE OR REPLACE FUNCTION f_atomic_species(text) RETURNS text AS $$
 
 declare 

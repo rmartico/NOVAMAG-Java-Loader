@@ -2,6 +2,7 @@
 It creates the database schema
 and insert rows in master tables.
 */
+\connect novamag 
 
 drop schema if exists public cascade;
 create schema public;

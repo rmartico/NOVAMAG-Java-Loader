@@ -30,7 +30,7 @@ java -cp "NOVAMAG-Java-Loader.jar;lib/*" json_loader.Loader F:\data\Fe_Ni.json
 The NOVAMAG Java Loader needs several jar libraries (note lib/* in the example above). These libraries provide methods to manage JSON format, JDBC database connectivity, JNDI services and logging.
 
 If massive data loading is needed, the Java Loader Application can cope with ZIP compressed files. The ZIP files can contains a sub-directory tree. In each sub-directory new sub-directories or JSON files can be allocated. Again, each JSON file can contain information of a solely material or of several materials, and the attached files of these materials must be in the ZIP file allocated in the same path than the JSON file that references them.
-The invocation is the same than in the JSON file case, except that the argument now is a ZIP file as illustrates the figure below.
+The invocation is the same than in the JSON file case, but the argument which is a ZIP file, as illustrates the figure below.
 
 java -cp "NOVAMAG-Java-Loader.jar;lib/*" json_loader.Loader F:\data\Fe_Ta.zip
 
@@ -38,7 +38,7 @@ INSTALLATION
 ============
 
 1) Copy into the installation folder these files:
-- NOVAMAG-Java-Loader.jat
+- NOVAMAG-Java-Loader.jar
 - log4j2.xml (change this log4 configuration file according your preferences)
 
 2) Create the following subfolders
@@ -72,6 +72,8 @@ The res (resources) folder must contain:
 		"PG_HOME": "C:\\Program Files\\PostgreSQL\\9.6\\bin\\"
 	-- For Linux
 		"PG_HOME": "/opt/PostgreSQL/9.6/bin/"
+		or also
+		"PG_HOME": "/usr/lib/postgresql/9.6/bin/"
 
 4) Create a JNDI context in the res folder, using the com.sun.jndi.fscontext.RefFSContextFactory
 	The name of the context must be "jdbc/novamag"
@@ -96,7 +98,7 @@ The res (resources) folder must contain:
 		
 		context.rebind("jdbc/novamag", source);
 	
-	
+
 
 
 
