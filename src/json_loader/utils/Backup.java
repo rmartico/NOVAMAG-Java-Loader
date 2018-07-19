@@ -82,7 +82,7 @@ public class Backup {
 	
 	/**	
 	 * It performs a backup copy of the PostgreSQL public schema
-	 * invoking pg_dump
+	 * in novamag db by invoking pg_dump
 	 * 
 	 * It checks in which OS the app is running and then it picks
 	 * the corresponding backup script
