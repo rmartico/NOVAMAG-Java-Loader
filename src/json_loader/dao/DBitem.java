@@ -1070,7 +1070,7 @@ public class DBitem {
 
 	 * 
 	 * @param m_kind_of_anisotropy can take the values
-	 * A when easy axis, P when planar easy axis, C when easy cone
+	 * A when easy axis, P when easy plane, C when easy cone
 	 * @throws LoaderException when none of the values above is taken by the argument
 	 */
 	public void setKind_of_anisotropy(String m_kind_of_anisotropy) throws LoaderException {
@@ -1084,11 +1084,12 @@ public class DBitem {
 			case "easy axis":
 				this.m_kind_of_anisotropy = "A";
 				break;
-			case "planar easy axis":
+			case "easy plane":
 				this.m_kind_of_anisotropy = "P";
 				break;
 			case "easy cone":
-				this.m_kind_of_anisotropy = "C";				
+				this.m_kind_of_anisotropy = "C";
+				break;
 			default:
 				throw new LoaderException(LoaderException.KIND_OF_ANISOTROPY_INCORRECT);
 		}		

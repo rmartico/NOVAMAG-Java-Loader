@@ -31,30 +31,27 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import json_loader.JSONparser;
+import json_loader.Loader;
 import json_loader.utils.Cleaner;
 import json_loader.utils.Comparators;
 
 public class TestDBItem {
-	
-	@Test
-	public void testInsertOK() throws NamingException, IOException, SQLException {
-		 String fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_1.json";		 
-		
+	private static void common_intializations(String fileName) throws SQLException, NamingException, IOException{
 		 Cleaner.CleanDB();
 		 Cleaner.insertAtom("Fe");
 		 Cleaner.insertAtom("Ge");
 		 
-		 InputStream is = new FileInputStream(fileName);         
-         String jsonTxt = IOUtils.toString(is, "UTF-8");
-         //System.out.println(jsonTxt);
-         
-         JSONObject obj = new JSONObject(jsonTxt);          
-         JSONparser jp = new JSONparser();
-         jp.parseJSON(obj);
+		 Loader l = new Loader();							
+		 l.parseFile(fileName);		
 		
-         DBitem item = jp.getItem();
-         item.insert(null, true);         
-         
+	}
+	
+	@Test
+	public void testInsertOK() throws NamingException, IOException, SQLException {
+		 String fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_1.json";
+		 
+		 common_intializations(fileName);
+		 
          String query = "select formula||mafid||type||name||summary||production_info||stechiometry"
          		+ " from items natural join molecules order by 1;";
          Comparators.assertEqualsResultSet(query, 4205810780L);
@@ -65,10 +62,45 @@ public class TestDBItem {
          
          query = "select formula||mafid||file_name||file_type||is_text||blob_content||info "
         		 + "from items natural left join attached_files order by 1;";
-         Comparators.assertEqualsResultSet(query, 2066072091L);
-        
+         Comparators.assertEqualsResultSet(query, 2066072091L);        
 		 
 	}
 	
 
+	@Test
+	/*
+	 * It tests other different kinds of anisotropies than typical planar(P), i.e.:
+	 * -easy axis (encoded as A in the DB)
+	 * -easy cone (encoded as C in the DB)
+	 * 
+	 */
+	public void testKindOfAnisotropy() throws NamingException, IOException, SQLException {
+		 String fileName = null;
+		 String query = null;
+		 
+		 fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_EasyAxis.json";	
+		 common_intializations(fileName);
+	
+         query = "select kind_of_anisotropy "
+          		+ " from items natural join molecules order by 1;";
+         
+         Comparators.assertEqualsResultSet(query, 3554254475L);//CRC for A
+         
+         fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_EasyCone.json";	
+		 common_intializations(fileName);
+		 
+		 query = "select kind_of_anisotropy "
+	          		+ " from items natural join molecules order by 1;";
+	         
+	     Comparators.assertEqualsResultSet(query, 1037565863L);//CRC for C
+	         
+	     fileName="data_for_tests/dao.dbitem/Fe12Ge6_#164_EasyPlane.json";	
+		 common_intializations(fileName);
+		 
+		 query = "select kind_of_anisotropy "
+	          		+ " from items natural join molecules order by 1;";
+	         
+	     Comparators.assertEqualsResultSet(query, 3110715001L);//CRC for P
+         
+	}
 }

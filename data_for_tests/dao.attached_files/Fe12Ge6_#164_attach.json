@@ -1,0 +1,14 @@
+{
+  "name": "NOVAMAG_attached_JSON_file_example",
+  "properties": {
+    "prop1": {
+      "value": "one 1"
+    },
+    "prop2": {
+      "value": "two 2"
+    },
+    "prop3": {
+      "value": "three 3"
+    }
+   }
+  }

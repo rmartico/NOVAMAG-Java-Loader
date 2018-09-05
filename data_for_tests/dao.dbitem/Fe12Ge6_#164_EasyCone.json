@@ -1,5 +1,5 @@
 {
-  "name": "NOVAMAG_theory_ICCRAM_Fe12Ge6_#164_1",
+  "name": "NOVAMAG_theory_ICCRAM_Fe12Ge6_#164_EasyCone",
   "properties": {
     "approach": {
       "value": "theory"
@@ -147,7 +147,7 @@
         "value": null
       },
       "kind of anisotropy": {
-        "value": null
+        "value": "easy cone"
       },
       "anisotropy info": {
         "value": null
@@ -206,10 +206,10 @@
         "value": null
       },
       "attached files": {
-        "value":  ["Fe12Ge6_#164_1.cif","CONTCAR_Fe12Ge6_#164_1", "2-16031G20533419.jpg", "Fe12Ge6_#164_attach.json"]
+        "value":  null
       },
       "attached files info": {
-        "value":["This is a cif file",, "This is a beautiful picture", "An stupid json file"]
+        "value": null
       }
     }
   }

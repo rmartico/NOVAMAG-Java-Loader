@@ -268,7 +268,9 @@ insert into file_types values
 ('CONTCAR',true, 'CONTCAR.*'),
 ('CIF', true,  '.*\.(cif|CIF)'),
 ('JPG', false, '.*\.(jpg|JPG|jpeg|JPEG)'),
-('PNG', false, '.*\.(png|PNG)');
+('PNG', false, '.*\.(png|PNG)'),
+('JSON', true, '.*\.(json|JSON)') --NEW!!
+;
 
 create table attached_files(
 	mafId  		integer references items on delete cascade on update cascade,

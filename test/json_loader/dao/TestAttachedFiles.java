@@ -61,6 +61,7 @@ public class TestAttachedFiles {
 	public void setUp() throws Exception {
 		
 		//Clean temp folder
+		Config.loadConfig();
 		File file = new File(Config.TEMP_FOLDER);
 		FileManager.purgeDirectory(file);
         
@@ -68,6 +69,7 @@ public class TestAttachedFiles {
         FileManager.copy("data_for_tests/dao.attached_files/Fe12Ge6_#164_1.cif", Config.TEMP_FOLDER);
         FileManager.copy("data_for_tests/dao.attached_files/CONTCAR_Fe12Ge6_#164_1", Config.TEMP_FOLDER);
         FileManager.copy("data_for_tests/dao.attached_files/2-16031G20533419.jpg", Config.TEMP_FOLDER);
+        FileManager.copy("data_for_tests/dao.attached_files/Fe12Ge6_#164_attach.json", Config.TEMP_FOLDER);
 		
 	}
 	
@@ -221,6 +223,17 @@ public class TestAttachedFiles {
 					//System.out.println("CRC32 checksum for input string is: " + checksumValue);
 					assertEquals(checksumValue,282947058);
 					
+					break;
+				case 3:
+					assertEquals(rs.getString("file_name"),"Fe12Ge6_#164_attach.json");
+					assertEquals(rs.getString("file_type"),"JSON");
+					assertEquals(rs.getString("info"),"An stupid json file");
+
+					assertEquals(m_clob.length(),225);
+					assertEquals(wc, 25);
+					assertEquals(lc, 14);
+					assertEquals(ones, 3);
+
 					break;
 				case 4:
 					fail();
