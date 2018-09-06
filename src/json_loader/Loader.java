@@ -118,7 +118,7 @@ public class Loader {
 	 * @throws IOException if the file can't be found or opened
 	 * @return the number of materials succesfully loaded
 	 */	
-	public int parseFile(String fileName) throws IOException{
+	public int parseFile(String fileName) throws IOException, SQLException{
 		int n=0;
 		
 		String extension = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
@@ -132,7 +132,7 @@ public class Loader {
 				Attached_files.setCurrPath(currPath);
 				
 				Loader l = new Loader();
-				n=l.parseJSONfile(fileName);
+				n=l.parseJSONfile(fileName, null);
 				
 				printReport(fileName, n);
 				
@@ -157,7 +157,7 @@ public class Loader {
 				System.out.println(extension+" is not still supported in this version");
 				break;
 			default:
-				System.out.println(extension+"files are not supported in this version");
+				System.out.println(extension+" files are not supported in this version");
 				break;
 		}
 		
@@ -170,10 +170,29 @@ public class Loader {
 	 * @param filename the path to the temp directory where was unzipped 
 	 * a zip file containing json files with several materials in each one.
 	 * @return the number of materials in the zip succesfully loaded
-	 * @throws IOException if the file can't be found or opened
+	 * @throws 	IOException if the file can't be found or opened
+	 * 			SQLException if some database violation
 	 */
-	public int  processUnizipped(String filename) throws IOException{
-		return processUnizipped(filename,0);
+	public int  processUnizipped(String filename) throws IOException, SQLException{
+		ConnectionPool p=null;
+		Connection con = null;
+		
+		try{
+			p=ConnectionPool.getInstance();
+			con = p.getConnection();
+		
+			int n = processUnizipped(filename,0, con);
+			
+			con.commit();
+			return n;
+			
+		} catch (SQLException e){
+			con.rollback();
+			throw e;						
+		} finally {
+			con.close();						
+		}	
+			
 	}
 	
 	/**
@@ -185,13 +204,17 @@ public class Loader {
 	 * a zip file containing json files with several materials in each one.
 	 * @param lastN is a counter of the number of materials in the zip succesfully loaded in 
 	 * the moment of this recursive invocation to the method
+	 * 		con is the shared database connection for all files in the same zip. It is used
+	 * 		to keep transaction atomicity for all items in the same zip. 
 	 * @return the number of materials in the zip succesfully loaded
-	 * @throws IOException if the file can't be found or opened
+	 * @throws  IOException if the file can't be found or opened
+	 * 			SQLException if some database violation
 	 */
-	private int  processUnizipped(String filename, int lastN) throws IOException{
+	private int  processUnizipped(String filename, int lastN, Connection con) throws IOException, SQLException{
 		File[] paths;
 		int n=0;
-		Attached_files.setCurrPath(filename+"/");
+		Attached_files.setCurrPath(filename+"/");	
+		
 		
 		if (lastN>0)
 			n=lastN;
@@ -202,7 +225,7 @@ public class Loader {
 		for(File f:paths) {
 			if (f.isDirectory()){
 				System.out.println("BEGIN Directory: "+f.getAbsolutePath()+"\t n="+n);				
-				n=processUnizipped(f.getAbsolutePath(),n);
+				n=processUnizipped(f.getAbsolutePath(),n, con);
 				System.out.println("END Directory: "+f.getAbsolutePath()+"\t n="+n);
 			} else {
 				String inner_file_name = f.getAbsolutePath();
@@ -213,8 +236,8 @@ public class Loader {
 				if (extension.equalsIgnoreCase("JSON")){
 					System.out.println(""+n+"\t"+f.getAbsolutePath());
 				
-					Loader l = new Loader();
-					n+=l.parseJSONfile(inner_file_name);
+					Loader l = new Loader();					
+					n+=l.parseJSONfile(inner_file_name, con);
 				}
 			}
 		}
@@ -225,13 +248,16 @@ public class Loader {
 	/**
 	 * It loads a single json file with one or several materials
 	 * 
-	 * @param fileName the path+filename to a json file containing materials
+	 * @param 	fileName the path+filename to a json file containing materials
+	 * 			con is a database connection. con is not null when the JSON file parsing
+	 * 			is within a transaction containing several json files (i.e., a few
+	 * 			json file inside a zip file).
 	 * @return the number of materials succesfully loaded (if the file contains
 	 * a json array, then it cointains one material per array element, if the file
 	 * contains a json object it only contains a single material)
 	 * @throws IOException if the file can't be found or opened
 	 */
-	public int parseJSONfile( String fileName ) throws IOException{
+	public int parseJSONfile( String fileName, Connection con) throws IOException, SQLException{
 		
 		InputStream is = new FileInputStream(fileName);
 		String jsonTxt = IOUtils.toString(is, "UTF-8");		
@@ -242,12 +268,15 @@ public class Loader {
 		int n=0;
 		
 		ConnectionPool p = null;
-        Connection con = null;
+        //Connection con = null;
+		boolean doCommit = (con==null);
 		
 		try {
 			
-			p=ConnectionPool.getInstance();
-		    con = p.getConnection();
+			if (con==null){
+				p=ConnectionPool.getInstance();
+				con = p.getConnection();				
+			}
 			
 	        if (firstChar.equalsIgnoreCase("{")) {
 	        	obj = new JSONObject(jsonTxt);
@@ -256,7 +285,7 @@ public class Loader {
 	            jp.parseJSON(obj);
 	            
 	            DBitem item = jp.getItem();
-	            item.insert(con, true);
+	            item.insert(con, doCommit);
 	            n=1;
 	            
 	        } else {
@@ -275,13 +304,16 @@ public class Loader {
 	            }
 	        }
         	
-        	con.commit();
+	        if (doCommit)
+	        	con.commit();
         		
     	} catch (SQLException e) {
 			l.error(e.getMessage());
 			e.printStackTrace();
+			throw e;
 		} finally {
-			p.close(con);
+			if (doCommit)
+				p.close(con);
 			is.close(); 
 		}
          

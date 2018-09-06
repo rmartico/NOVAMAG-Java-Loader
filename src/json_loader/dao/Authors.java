@@ -174,8 +174,9 @@ public class Authors {
 	 *  Usually this param is false, as this insertion is part of the item insertion
 	 *  in DBitem class. However you can set it to true for debugging and testing
 	 *  purposes.
+	 * @throws SQLException if database violation 
 	 */
-	public void insert( Connection con, boolean doCommit ){
+	public void insert( Connection con, boolean doCommit ) throws SQLException{
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -208,6 +209,7 @@ public class Authors {
 		} catch (SQLException e) {
 			p.undo(con);
 			l.error(e.getMessage());
+			throw e;
 			
 		} finally {			
 			p.close(ins_authoring);

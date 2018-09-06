@@ -173,10 +173,11 @@ public class Molecule {
 	 *  Usually this param is false, as this insertion is part of the item insertion
 	 *  in DBitem class. However you can set it to true for debugging and testing
 	 *  purposes.
-	 * @throws LoaderException if the molecule has an invented or incorrect atom symbol
+	 * @throws SQLException typically if the molecule has an invented or incorrect atom symbol
+	 * 	but any other database violation can be the problem
 	 */
 	public void insert( Connection con, boolean doCommit ) 
-			throws LoaderException{
+			throws SQLException{
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -242,6 +243,7 @@ public class Molecule {
 			}
 			
 			l.error(e.getMessage());
+			throw e;
 			
 		} finally {
 			p.close(ins_composition);

@@ -72,7 +72,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testParseJSONfile_FeNi_L10_v2() throws IOException, NamingException {
+	public void testParseJSONfile_FeNi_L10_v2() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/FeNi_L10_v2.json";
 		
 		Loader loader=new Loader();
@@ -158,7 +158,7 @@ public class TestLoader {
 
 	
 	@Test
-	public void testParseJSONfile_examples_database_1() throws IOException, NamingException {
+	public void testParseJSONfile_examples_database_1() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/examples_database_1.json";
 		
 		Loader loader=new Loader();
@@ -243,7 +243,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testParseJSONfile_examples_database_2() throws IOException, NamingException {
+	public void testParseJSONfile_examples_database_2() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/examples_database_2.json";
 		
 		Loader loader=new Loader();
@@ -328,7 +328,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testInsertIncludingAttachedFiles() throws IOException, NamingException {
+	public void testInsertIncludingAttachedFiles() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/Fe12Ge6_#164_1.json";
 		//Attached_files.setCurrPath("data_for_tests/loader/");
 		
@@ -357,7 +357,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testInsertIncludingSeveralAuthors() throws IOException, NamingException {
+	public void testInsertIncludingSeveralAuthors() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/Fe12Ge6_#164_1.json";
 		
 		Loader loader=new Loader();
@@ -386,7 +386,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testInsertFeGeZip() throws IOException, NamingException {
+	public void testInsertFeGeZip() throws IOException, NamingException, SQLException {
 		String fileName = "data_for_tests/loader/FeGe.zip";		
 		
 		Loader loader = new Loader();							
@@ -469,7 +469,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testInsertFeTaZip() throws IOException, NamingException {
+	public void testInsertFeTaZip() throws IOException, NamingException, SQLException {
 		String fileName = "data_for_tests/loader/FeTa.zip";		
 		
 		Loader loader = new Loader();							
@@ -552,7 +552,7 @@ public class TestLoader {
 	}
 
 	@Test
-	public void testParseJSONfile_confidential() throws IOException, NamingException {
+	public void testParseJSONfile_confidential() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/examples_database_1confidential.json";
 		
 		Loader loader=new Loader();

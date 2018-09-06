@@ -232,10 +232,12 @@ public class Attached_files {
 	 *  in DBitem class. However you can set it to true for debugging and testing
 	 *  purposes.
 	 *  
-	 *  @throws LoaderException when a referenced file is not found in the expected path
+	 *  @throws
+	 *  	IOException  usually when a referenced file is not found in the expected path
+	 *  	SQLException debt to any database violation
 	 */
 	public void insert( Connection con, boolean doCommit)
-			throws LoaderException{
+			throws IOException, SQLException{
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -303,6 +305,7 @@ public class Attached_files {
 		} catch (SQLException| IOException e) {
 			p.undo(con);
 			l.error(e.getMessage());
+			throw e;
 			
 		} finally {			
 			p.close(pst_ins_file);

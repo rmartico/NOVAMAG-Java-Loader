@@ -184,9 +184,11 @@ public class DBitem {
 	 * @param con the database connection, if null then a new one is created and also released
 	 * at the end of the method
 	 * @param doCommit if true commit is made at the end of the method
+	 * @throws  SQLException when database violation
+	 * 			IOException if some attached file is not found 
 	 * 
 	 */
-	public void insert(Connection con, boolean doCommit){
+	public void insert(Connection con, boolean doCommit) throws SQLException, IOException{
 		
 		ConnectionPool p = null;
 		boolean closeConnection=false;
@@ -311,8 +313,9 @@ public class DBitem {
 			if (doCommit)
 				con.commit();			
 			
-		} catch ( SQLException e) {
+		} catch ( SQLException|IOException e) {
 			l.error(e.getMessage());
+			throw e;
 			//e.printStackTrace();
 		} finally {
 			p.close(rs_lastMafId);
