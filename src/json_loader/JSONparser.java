@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.sql.Connection;
 
 import org.apache.commons.io.IOUtils;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import json_loader.dao.DBitem;
 import json_loader.utils.Cleaner;
 import json_loader.utils.ConnectionPool;
+import json_loader.utils.JSONformatter;
 
 /**
  * 
@@ -169,83 +171,246 @@ public class JSONparser {
 	public void parseJSON( JSONObject obj ){
 		
 		JSONObject jsonContext, allProps = null;
+		JSONformatter	jsonRoot = new JSONformatter(null);		
 		
-		try {
+		try {			
 			
+			boolean confidential = false;
 			try{
-				item.setConfidential(obj.getJSONObject("confidential").getBoolean("value"));				
+				confidential = obj.getJSONObject("confidential").getBoolean("value");
+				item.setConfidential(confidential);
 			} catch (JSONException e){ //Confidential attribute is not there
+				item.setConfidential(false);//default value
 				l.info(e.getMessage());
-				item.setConfidential(false);
+			} finally {
+				jsonRoot.addItem("confidential", ""+confidential);
 			}
 			
-			item.setName(obj.getString("name"));
+			String name = obj.getString("name");
+			item.setName(name);
+			jsonRoot.addValue("name", "\""+name+"\"");
 			
 			allProps = obj.getJSONObject("properties");
 			jsonContext = allProps;
+			JSONformatter jsonProps = new JSONformatter("properties");	
 			
-			item.setType(jsonContext.getJSONObject("approach").getString("value"));//JSON approach
-			item.setSummary(jsonContext.getJSONObject("summary").getString("value"));
+			String approach = jsonContext.getJSONObject("approach").getString("value");//JSON approach
+			item.setType(approach);
+			jsonProps.addStringItem("approach", approach);
+			
+			String summary = jsonContext.getJSONObject("summary").getString("value");
+			item.setSummary(summary);
+			jsonProps.addStringItem("summary", summary);
 			
 			//Chemistry
 			jsonContext = allProps.getJSONObject("chemistry");
-			item.setFormula(jsonContext.getJSONObject("chemical formula").getString("value"));
-			item.setProduction_info(jsonContext.getJSONObject("production info").optString("value"));
+			JSONformatter jsonChemistry = new JSONformatter("chemistry");
+			
+			String chemicalFormula = jsonContext.getJSONObject("chemical formula").getString("value");
+			item.setFormula(chemicalFormula);
+			jsonChemistry.addStringItem("chemical formula", chemicalFormula);
+			
+			String productionInfo = jsonContext.getJSONObject("production info").optString("value");
+			item.setProduction_info(productionInfo);
+			jsonChemistry.addStringItem("production info", productionInfo);
+			
+			jsonProps.addSection(jsonChemistry);
 			
 			//Crystal
 			jsonContext = allProps.getJSONObject("crystal");
-			item.setCompound_space_group(jsonContext.getJSONObject("compound space group").optInt("value", -1));
-			item.setUnit_cell_volume(jsonContext.getJSONObject("unit cell volume").optBigDecimal("value",null));
+			JSONformatter jsonCrystal = new JSONformatter("crystal");
 			
-			item.setLattice_parameters(jsonContext.getJSONObject("lattice parameters").optJSONArray("value"));
-			item.setLattice_angles(jsonContext.getJSONObject("lattice angles").optJSONArray("value"));
-			item.setAtomic_positions(jsonContext.getJSONObject("atomic positions").optJSONArray("value"));
-			item.setCrystal_info(jsonContext.getJSONObject("crystal info").optString("value"));
+			int compoundSpaceGroup = jsonContext.getJSONObject("compound space group").optInt("value", -1);			
+			item.setCompound_space_group(compoundSpaceGroup);
+			jsonCrystal.addItem("compound space group", ""+compoundSpaceGroup);
+			
+			BigDecimal unitCellVolume = jsonContext.getJSONObject("unit cell volume").optBigDecimal("value",null); 
+			item.setUnit_cell_volume(unitCellVolume);
+			jsonCrystal.addItem("unit cell volume", ""+unitCellVolume);
+			
+			JSONArray latticeParameters = jsonContext.getJSONObject("lattice parameters").optJSONArray("value"); 
+			item.setLattice_parameters(latticeParameters);
+			jsonCrystal.addItem("lattice parameters", ""+latticeParameters);			
+			
+			JSONArray latticeAngles = jsonContext.getJSONObject("lattice angles").optJSONArray("value");
+			item.setLattice_angles(latticeAngles);
+			jsonCrystal.addItem("lattice angles", ""+latticeAngles);
+			
+			JSONArray atomicPositions = jsonContext.getJSONObject("atomic positions").optJSONArray("value");
+			item.setAtomic_positions(atomicPositions);
+			jsonCrystal.addItem("atomic positions", ""+atomicPositions);
+			
+			String crystalInfo = jsonContext.getJSONObject("crystal info").optString("value");
+			item.setCrystal_info(crystalInfo);
+			jsonCrystal.addStringItem("crystal info", crystalInfo);
+			
+			jsonProps.addSection(jsonCrystal);
 			
 			//thermodynamics
 			jsonContext = allProps.getJSONObject("thermodynamics");
-			item.setUnitCellEnergy(jsonContext.getJSONObject("unit cell energy").optBigDecimal("value",null));;
-			item.setUnit_cell_formation_enthalpy(jsonContext.getJSONObject("unit cell formation enthalpy").optBigDecimal("value",null));
-			item.setEnergy_info(jsonContext.getJSONObject("energy info").optString("value", null));
-			item.setInteratomic_potentials_info(jsonContext.getJSONObject("interatomic potentials info").optString("value", null));
-			item.setMagnetic_free_energy(jsonContext.getJSONObject("magnetic free energy").optBigDecimal("value",null));
-			item.setMagnetic_free_energy_info(jsonContext.getJSONObject("magnetic free energy info").optString("value", null));
+			JSONformatter jsonThermodynamics = new JSONformatter("thermodynamics");
+			
+			BigDecimal unitCellEnergy = jsonContext.getJSONObject("unit cell energy").optBigDecimal("value",null);
+			item.setUnitCellEnergy(unitCellEnergy);
+			jsonThermodynamics.addItem("unit cell energy", ""+unitCellEnergy);
+			
+			BigDecimal unitCellFormationEnthalpy = 
+					jsonContext.getJSONObject("unit cell formation enthalpy").optBigDecimal("value",null);
+			item.setUnit_cell_formation_enthalpy(unitCellFormationEnthalpy);
+			jsonThermodynamics.addItem("unit cell formation enthalpy", ""+unitCellFormationEnthalpy);
+			
+			String energyInfo = jsonContext.getJSONObject("energy info").optString("value", null);
+			item.setEnergy_info(energyInfo);
+			jsonThermodynamics.addStringItem("energy info", energyInfo);
+			
+			String interatomicPotentialsInfo = jsonContext.getJSONObject("interatomic potentials info").optString("value", null);
+			item.setInteratomic_potentials_info(interatomicPotentialsInfo);
+			jsonThermodynamics.addStringItem("interatomic potentials info", interatomicPotentialsInfo);
+			
+			BigDecimal magneticFreeEnergy = jsonContext.getJSONObject("magnetic free energy").optBigDecimal("value",null);			
+			item.setMagnetic_free_energy(magneticFreeEnergy);
+			jsonThermodynamics.addItem("magnetic free energy", ""+magneticFreeEnergy);
+			
+			String magneticFreeEnergyInfo = jsonContext.getJSONObject("magnetic free energy info").optString("value", null);			
+			item.setMagnetic_free_energy_info(magneticFreeEnergyInfo);
+			jsonThermodynamics.addStringItem("magnetic free energy info", magneticFreeEnergyInfo);
+			
+			jsonProps.addSection(jsonThermodynamics);
 			
 			//magnetics
 			jsonContext = allProps.getJSONObject("magnetics");
-			item.setUnit_cell_spin_polarization(jsonContext.getJSONObject(
-					"unit cell spin polarization").optBigDecimal("value",null));
-			item.setAtomic_spin_specie(jsonContext.getJSONObject("atomic spin specie").optJSONArray("value"));
-			item.setSaturation_magnetization(jsonContext.getJSONObject("saturation magnetization").optBigDecimal("value",null));
-			item.setMagnetization_temperature(jsonContext.getJSONObject("magnetization temperature").optBigDecimal("value",null));
-			item.setMagnetization_info(jsonContext.getJSONObject("magnetization info").optString("value", null));
-			item.setMagnetocrystalline_anisotropy_energy(jsonContext.getJSONObject("magnetocrystalline anisotropy energy").optJSONArray("value"));
-			item.setAnisotropy_energy_type(jsonContext.getJSONObject("anisotropy energy type").optString("value", null));			
-			item.setMagnetocrystalline_anisotropy_constants(jsonContext.getJSONObject("magnetocrystalline anisotropy constants").optJSONArray("value"));
-			item.setKind_of_anisotropy(jsonContext.getJSONObject("kind of anisotropy").optString("value", null));
-			item.setAnisotropy_info(jsonContext.getJSONObject("anisotropy info").optString("value", null));
-			item.setExchange_integrals(jsonContext.getJSONObject("exchange integrals").optJSONArray("value"));
-			item.setExchange_info(jsonContext.getJSONObject("exchange info").optString("value", null));
-			item.setMagnetic_order(jsonContext.getJSONObject("magnetic order").optString("value", null));
-			item.setCurie_temperature(jsonContext.getJSONObject("curie temperature").optBigDecimal("value",null));
-			item.setCurie_temperature_info(jsonContext.getJSONObject("curie temperature info").optString("value", null));
-			item.setAnisotropy_field(jsonContext.getJSONObject("anisotropy field").optBigDecimal("value",null));
-			item.setRemanence(jsonContext.getJSONObject("remanence").optBigDecimal("value",null));
-			item.setCoercivity(jsonContext.getJSONObject("coercivity").optBigDecimal("value",null));
-			item.setEnergy_product(jsonContext.getJSONObject("energy product").optBigDecimal("value",null));
-			item.setHysteresis_info(jsonContext.getJSONObject("hysteresis info").optString("value", null));
-			item.setDomain_wall_width(jsonContext.getJSONObject("domain wall width").optBigDecimal("value",null));
-			item.setDomain_wall_info(jsonContext.getJSONObject("domain wall info").optString("value", null));
-			item.setExchange_stiffness(jsonContext.getJSONObject("exchange stiffness").optBigDecimal("value",null));
-			item.setExchange_stiffness_info(jsonContext.getJSONObject("exchange stiffness info").optString("value", null));
+			JSONformatter jsonMagnetics = new JSONformatter("magnetics");
+			
+			BigDecimal unitCellSpinPolarization = jsonContext.getJSONObject(
+					"unit cell spin polarization").optBigDecimal("value",null);			
+			item.setUnit_cell_spin_polarization(unitCellSpinPolarization);
+			jsonMagnetics.addItem("unit cell spin polarization", ""+unitCellSpinPolarization);
+			
+			JSONArray atomicSpinSpecie = jsonContext.getJSONObject("atomic spin specie").optJSONArray("value");
+			item.setAtomic_spin_specie(atomicSpinSpecie);
+			jsonMagnetics.addItem("atomic spin specie", ""+atomicSpinSpecie);
+			
+			BigDecimal saturationMagnetization = jsonContext.getJSONObject("saturation magnetization").optBigDecimal("value",null);
+			item.setSaturation_magnetization(saturationMagnetization);
+			jsonMagnetics.addItem("saturation magnetization", ""+saturationMagnetization);
+			
+			BigDecimal magnetizationTemperature = jsonContext.getJSONObject("magnetization temperature").optBigDecimal("value",null);
+			item.setMagnetization_temperature(magnetizationTemperature);
+			jsonMagnetics.addItem("magnetization temperature", ""+magnetizationTemperature);
+			
+			String magnetizationInfo = jsonContext.getJSONObject("magnetization info").optString("value", null);
+			item.setMagnetization_info(magnetizationInfo);
+			jsonMagnetics.addStringItem("magnetization info", magnetizationInfo);
+			
+			JSONArray magnetocrystallineAnisotropyEnergy = jsonContext.getJSONObject("magnetocrystalline anisotropy energy").optJSONArray("value");			
+			item.setMagnetocrystalline_anisotropy_energy(magnetocrystallineAnisotropyEnergy);
+			jsonMagnetics.addItem("magnetocrystalline anisotropy energy", ""+magnetocrystallineAnisotropyEnergy);
+			
+			String anisotropyEnergyType = jsonContext.getJSONObject("anisotropy energy type").optString("value", null);
+			item.setAnisotropy_energy_type(anisotropyEnergyType);
+			jsonMagnetics.addStringItem("anisotropy energy type", anisotropyEnergyType);
+			
+			JSONArray magnetocrystallineAnisotropyConstants = 
+					jsonContext.getJSONObject("magnetocrystalline anisotropy constants").optJSONArray("value");
+			item.setMagnetocrystalline_anisotropy_constants(magnetocrystallineAnisotropyConstants);
+			jsonMagnetics.addItem("magnetocrystalline anisotropy constants", ""+magnetocrystallineAnisotropyConstants);
+			
+			String kindOfAnisotropy = jsonContext.getJSONObject("kind of anisotropy").optString("value", null);
+			item.setKind_of_anisotropy(kindOfAnisotropy);
+			jsonMagnetics.addStringItem("kind of anisotropy", kindOfAnisotropy);
+			
+			String anisotropyInfo = jsonContext.getJSONObject("anisotropy info").optString("value", null);
+			item.setAnisotropy_info(anisotropyInfo);
+			jsonMagnetics.addStringItem("anisotropy info", anisotropyInfo);
+			
+			JSONArray exchangeIntegrals = jsonContext.getJSONObject("exchange integrals").optJSONArray("value");
+			item.setExchange_integrals(exchangeIntegrals);
+			jsonMagnetics.addItem("exchange integrals", ""+exchangeIntegrals);
+			
+			String exchangeInfo = jsonContext.getJSONObject("exchange info").optString("value", null);
+			item.setExchange_info(exchangeInfo);
+			jsonMagnetics.addStringItem("exchange info", exchangeInfo);
+			
+			String magneticOrder = jsonContext.getJSONObject("magnetic order").optString("value", null);
+			item.setMagnetic_order(magneticOrder);
+			jsonMagnetics.addStringItem("magnetic order", magneticOrder);
+			
+			BigDecimal curieTemperature = jsonContext.getJSONObject("curie temperature").optBigDecimal("value",null);
+			item.setCurie_temperature(curieTemperature);
+			jsonMagnetics.addItem("curie temperature", ""+curieTemperature);
+			
+			String curieTemperatureInfo = jsonContext.getJSONObject("curie temperature info").optString("value", null);
+			item.setCurie_temperature_info(curieTemperatureInfo);
+			jsonMagnetics.addStringItem("curie temperature info", curieTemperatureInfo);
+			
+			BigDecimal anisotropyField = jsonContext.getJSONObject("anisotropy field").optBigDecimal("value",null);
+			item.setAnisotropy_field(anisotropyField);
+			jsonMagnetics.addItem("anisotropy field", ""+anisotropyField);
+			
+			BigDecimal remanence = jsonContext.getJSONObject("remanence").optBigDecimal("value",null);
+			item.setRemanence(remanence);
+			jsonMagnetics.addItem("remanence", ""+remanence);
+			
+			BigDecimal coercivity = jsonContext.getJSONObject("coercivity").optBigDecimal("value",null);
+			item.setCoercivity(coercivity);
+			jsonMagnetics.addItem("coercivity", ""+coercivity);
+			
+			BigDecimal energyProduct = jsonContext.getJSONObject("energy product").optBigDecimal("value",null);
+			item.setEnergy_product(energyProduct);
+			jsonMagnetics.addItem("energy product", ""+energyProduct);
+			
+			String hysteresisInfo = jsonContext.getJSONObject("hysteresis info").optString("value", null);
+			item.setHysteresis_info(hysteresisInfo);
+			jsonMagnetics.addStringItem("hysteresis info", hysteresisInfo);
+			
+			BigDecimal domainWallWidth = jsonContext.getJSONObject("domain wall width").optBigDecimal("value",null);
+			item.setDomain_wall_width(domainWallWidth);
+			jsonMagnetics.addItem("domain wall width", ""+domainWallWidth);
+			
+			String domainWallInfo = jsonContext.getJSONObject("domain wall info").optString("value", null);
+			item.setDomain_wall_info(domainWallInfo);
+			jsonMagnetics.addStringItem("domain wall info", domainWallInfo);
+			
+			BigDecimal exchangeStiffness = jsonContext.getJSONObject("exchange stiffness").optBigDecimal("value",null);
+			item.setExchange_stiffness(exchangeStiffness);
+			jsonMagnetics.addItem("exchange stiffness", ""+exchangeStiffness);
+			
+			String exchangeStiffnessInfo = jsonContext.getJSONObject("exchange stiffness info").optString("value", null);
+			item.setExchange_stiffness_info(exchangeStiffnessInfo);
+			jsonMagnetics.addStringItem("exchange stiffness info", exchangeStiffnessInfo);
+			
+			jsonProps.addSection(jsonMagnetics);
 			
 			//additional information
 			jsonContext = allProps.getJSONObject("additional information");
-			item.setAuthors(jsonContext.getJSONObject("authors").optJSONArray("value"));
-			item.setReference(jsonContext.getJSONObject("reference").optString("value", null));
-			item.setComments(jsonContext.getJSONObject("comments").optString("value", null));
-			item.setAttached_files(jsonContext.getJSONObject("attached files").optJSONArray("value"));
-			item.setAttached_files_info(jsonContext.getJSONObject("attached files info").optJSONArray("value"));
+			JSONformatter jsonAdditionalInfo = new JSONformatter("additional information");
+			
+			JSONArray authors = jsonContext.getJSONObject("authors").optJSONArray("value");
+			item.setAuthors(authors);
+			jsonAdditionalInfo.addItem("authors", ""+authors);
+			
+			String reference = jsonContext.getJSONObject("reference").optString("value", null);
+			item.setReference(reference);
+			jsonAdditionalInfo.addStringItem("reference", reference);
+			
+			String comments = jsonContext.getJSONObject("comments").optString("value", null);
+			item.setComments(comments);
+			jsonAdditionalInfo.addStringItem("comments", comments);
+			
+			JSONArray attachedFiles = jsonContext.getJSONObject("attached files").optJSONArray("value");
+			item.setAttached_files(attachedFiles);
+			jsonAdditionalInfo.addItem("attached files", ""+attachedFiles);
+			
+			JSONArray attachedFilesInfo = jsonContext.getJSONObject("attached files info").optJSONArray("value");
+			item.setAttached_files_info(attachedFilesInfo);
+			jsonAdditionalInfo.addItem("attached files info", ""+attachedFilesInfo);
+			
+			jsonProps.addSection(jsonAdditionalInfo);
+			
+			jsonRoot.addSection(jsonProps);
+			
+			jsonRoot.closeDocument();			
+			item.setJsonObject(jsonRoot.getJSONformatted());
 			
 		} catch (Exception e) {
 			l.error(e.getMessage());

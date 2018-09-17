@@ -21,6 +21,7 @@ package json_loader.dao;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -115,6 +116,7 @@ public class DBitem {
 	private String				m_comments;
 	private JSONArray			m_attached_files;
 	private JSONArray			m_attached_files_info;
+	private String				m_json;
 	
 	/**
 	 * 
@@ -310,6 +312,8 @@ public class DBitem {
 			files.setAttached_files_info(m_attached_files_info);
 			files.insert(con, false);
 			
+			addJsonAsAttachedFile(con, lastMafId);
+			
 			if (doCommit)
 				con.commit();			
 			
@@ -321,8 +325,51 @@ public class DBitem {
 			p.close(rs_lastMafId);
 			p.close(ins_item);
 			if (closeConnection) p.close(con);
-		}
+		}		
+	}
+	
+	/**
+	 * It adds the json file itselft as another attached file
+	 * 
+	 * Typical usage: insert( null, true)
+	 * 
+	 * @param con is the database connection
+	 * @param lastMafId is the primary key value of the item the json is going to be attached
+	 * @throws  SQLException when database violation
+	 * 
+	 */
+	private void addJsonAsAttachedFile(Connection con, long lastMafId) throws SQLException{
 		
+		PreparedStatement pst_ins_file=null;
+		
+		try{
+			
+			pst_ins_file = con.prepareStatement("INSERT INTO attached_files"
+					+ "(mafId, file_name, file_type, is_text, blob_content, info) "
+					+ "VALUES (?, ?, ?, ?, ?, null)");
+			pst_ins_file.setLong(1, lastMafId);
+			pst_ins_file.setString(2, getName()+".json");
+			pst_ins_file.setString(3, "JSON");
+			pst_ins_file.setBoolean(4, true);
+			
+			String obj = getJsonObject(); 
+			byte[] jsonBytes=null;
+			try {
+				jsonBytes = obj.toString().getBytes("utf-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pst_ins_file.setBytes(5, jsonBytes);
+			
+			pst_ins_file.executeUpdate();
+			
+		} catch (SQLException e) {
+			l.error(e.getMessage());
+			throw e;
+		} finally {
+			ConnectionPool.getInstance().close(pst_ins_file);
+		}
 		
 	}
 	
@@ -391,6 +438,26 @@ public class DBitem {
 	    s+="attached files info="+m_attached_files_info+"\n";				
 				
 		return s;
+	}
+	
+	/**
+	 * getter for the JSON item representation
+	 * It is used to treat the JSON file as an attached file 
+	 * 
+	 * @return the JSON representation of the item 
+	 */
+	public String getJsonObject(){
+		return m_json;
+	}
+	
+	/**
+	 * setter for the JSON item representation
+	 * It is used to treat the JSON file as an attached file 
+	 * 
+	 * @param A JSON object containing one item
+	 */
+	public void setJsonObject(String js){
+		m_json = js;
 	}
 	
 	/**

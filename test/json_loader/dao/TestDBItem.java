@@ -61,7 +61,9 @@ public class TestDBItem {
          Comparators.assertEqualsResultSet(query, 2867132551L);
          
          query = "select formula||mafid||file_name||file_type||is_text||blob_content||info "
-        		 + "from items natural left join attached_files order by 1;";
+        		 + "from items natural left join attached_files"
+        		 + " where file_type!='JSON'"
+        		 + " order by 1;";
          Comparators.assertEqualsResultSet(query, 2066072091L);        
 		 
 	}

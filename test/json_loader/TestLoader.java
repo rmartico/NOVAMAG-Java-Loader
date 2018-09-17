@@ -21,8 +21,15 @@ package json_loader;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -92,7 +99,7 @@ public class TestLoader {
 			Comparators.assertEqualsResultSet("SELECT author from authors order by 1", 2169542394L);
 			Comparators.assertEqualsResultSet("SELECT author||mafId from authoring order by 1 ", 3728057379L);
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||info "
-											+ "from attached_files order by 1", 0L);
+											+ "from attached_files order by 1", 634125391L);
 			Comparators.assertEqualsResultSet("SELECT formula||stechiometry from molecules order by 1", 544171746L);
 			Comparators.assertEqualsResultSet("SELECT mafId||type||name||"
 					+ "coalesce(''||summary,'')"
@@ -178,7 +185,7 @@ public class TestLoader {
 			Comparators.assertEqualsResultSet("SELECT author from authors order by 1", 2754730433L);
 			Comparators.assertEqualsResultSet("SELECT author||mafId from authoring order by 1 ", 2933823148L);
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||info "
-											+ "from attached_files order by 1", 0L);
+											+ "from attached_files order by 1", 1474648178L);
 			Comparators.assertEqualsResultSet("SELECT formula||stechiometry from molecules order by 1", 2074024329L);
 			Comparators.assertEqualsResultSet("SELECT mafId||type||name||"
 					+ "coalesce(''||summary,'')"
@@ -263,7 +270,7 @@ public class TestLoader {
 			Comparators.assertEqualsResultSet("SELECT author from authors order by 1", 2169542394L);
 			Comparators.assertEqualsResultSet("SELECT author||mafId from authoring order by 1 ", 2358028722L);
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||info "
-											+ "from attached_files order by 1", 0L);
+											+ "from attached_files order by 1", 194858117L);
 			Comparators.assertEqualsResultSet("SELECT formula||stechiometry from molecules order by 1", 181612618L);
 			Comparators.assertEqualsResultSet("SELECT mafId||type||name||"
 					+ "coalesce(''||summary,'')"
@@ -347,7 +354,7 @@ public class TestLoader {
 			st = con.createStatement();
 			
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||info "
-											+ "from attached_files order by 1", 3122602700L);
+											+ "from attached_files order by 1", 3296160627L);
 		} catch (SQLException e){			
 			l.error(e.getMessage());
 		} finally {
@@ -405,7 +412,7 @@ public class TestLoader {
 			Comparators.assertEqualsResultSet("SELECT author from authors order by 1", 2169542394L);
 			Comparators.assertEqualsResultSet("SELECT author||mafId from authoring order by 1 ", 234620115L);
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||coalesce(info,'') "
-											+ "from attached_files order by 1", 880125472L);
+											+ "from attached_files order by 1", 2238034066L);
 			Comparators.assertEqualsResultSet("SELECT formula||stechiometry from molecules order by 1", 3408102302L);
 			Comparators.assertEqualsResultSet("SELECT mafId||type||name||"
 					+ "coalesce(''||summary,'')"
@@ -488,7 +495,7 @@ public class TestLoader {
 			Comparators.assertEqualsResultSet("SELECT author from authors order by 1", 2169542394L);
 			Comparators.assertEqualsResultSet("SELECT author||mafId from authoring order by 1 ", 2092041226L);
 			Comparators.assertEqualsResultSet("SELECT mafId||file_name||file_type||is_text||blob_content||coalesce(''||info,'') "
-											+ "from attached_files order by 1", 4289713348L);
+											+ "from attached_files order by 1", 360256356L);
 			Comparators.assertEqualsResultSet("SELECT formula||stechiometry from molecules order by 1", 2085786346L);
 			Comparators.assertEqualsResultSet("SELECT mafId||type||name||"
 					+ "coalesce(''||summary,'')"
@@ -581,4 +588,85 @@ public class TestLoader {
 		}
 	}
 
+	@Test
+	public void testLoadedJSONisValid() throws Exception{
+		String file_name="data_for_tests/loader/examples_database_1confidential.json";
+		
+		Loader loader=new Loader();
+		int n = loader.parseFile(file_name);
+				
+		//Loop recover items one by one and concatenating them into an String
+		ResultSet 			rs=null;
+		PreparedStatement	pst_select=null;
+		Connection			con=null;
+		ConnectionPool 		p=null;
+		
+		//Create a json file simultaneusly
+		file_name = "data_for_tests/loader/delete_me.json";
+		File fout = new File(file_name);
+		FileOutputStream fos = new FileOutputStream(fout);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, Charset.forName("UTF-8")));
+		
+		String				firstRead="";
+		String				secondRead="";
+		try{
+			p = ConnectionPool.getInstance();
+			con = p.getConnection();			
+			pst_select = con.prepareStatement(
+					"SELECT  mafid, blob_content "+
+					"FROM attached_files "+
+					"ORDER BY mafId");
+			
+			rs = pst_select.executeQuery();
+			bw.write("[\n");
+			boolean writeComma = false;
+			while (rs.next()){				
+				
+				firstRead+="MafId="+rs.getString(1)+"\n";
+				String theJSON = new String(rs.getBytes(2), Charset.forName("UTF-8"));
+				firstRead+=theJSON+"\n";
+				firstRead+="=====================================";
+				
+				if (writeComma){
+					bw.write(",\n");					
+				}
+				bw.write(theJSON);
+				writeComma = true;
+			}
+			bw.write("\n]");
+			bw.close();
+		
+		
+			//Load the file
+			rs.close();
+			con.commit();
+			setUp();	//CleanDB		
+			n = loader.parseFile(file_name);
+			
+			//Loop to compare results
+			
+			rs = pst_select.executeQuery();
+			while (rs.next()){				
+				
+				secondRead+="MafId="+rs.getString(1)+"\n";
+				String theJSON = new String(rs.getBytes(2), Charset.forName("UTF-8"));				
+				secondRead+=""+theJSON+"\n";
+				secondRead+="=====================================";
+			}
+			
+			assertEquals(firstRead.equals(secondRead), true);
+			
+		} catch (SQLException|IOException e){			
+			throw e;
+		} finally {
+			con.commit();
+			p.close(rs);
+			p.close(pst_select);
+			p.close(con);
+			
+			fout.delete();
+		}
+			
+	}
+	
 }
