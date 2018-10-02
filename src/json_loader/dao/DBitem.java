@@ -661,6 +661,9 @@ public class DBitem {
 	 */
 	public void setLattice_parameters( JSONArray lattice_parameters ) throws LoaderException{
 		
+		if (lattice_parameters==null)
+			return;
+		
 		//Check it is OK
 		if (!(lattice_parameters.length()==3 || lattice_parameters.length()==0))
 			throw new LoaderException(LoaderException.LATTICE_PARAMETERS_DISTINCT_THAN_3);
@@ -703,6 +706,10 @@ public class DBitem {
 	 * 	or any of them is not numeric or is out of the [0.000,360.000] range
 	 */
 	public void setLattice_angles( JSONArray lattice_angles) throws LoaderException{
+		
+		if (lattice_angles==null)
+			return;
+		
 		//Check it is OK
 		if (!(lattice_angles.length()==3 || lattice_angles.length()==0))
 			throw new LoaderException(LoaderException.LATTICE_ANGLES_DISTINCT_THAN_3);

@@ -73,11 +73,21 @@ public class TestLoader {
 		Cleaner.insertAtom("Sn");
 		Cleaner.insertAtom("Ta");
 		
+
+		Cleaner.insertAtom("Nd");
+		Cleaner.insertAtom("Si");		
+		Cleaner.insertAtom("Sm");
+		Cleaner.insertAtom("V");
+		Cleaner.insertAtom("Zr");
+		
+		
+		
 		//Load configuration from res/config.json file
 		Config.loadConfig();		
 		FileManager.purgeDirectory(Config.TEMP_FOLDER);
 	}
 
+	
 	@Test
 	public void testParseJSONfile_FeNi_L10_v2() throws IOException, NamingException, SQLException {
 		String file_name="data_for_tests/loader/FeNi_L10_v2.json";
@@ -667,6 +677,17 @@ public class TestLoader {
 			fout.delete();
 		}
 			
+	}
+	
+	
+	@Test
+	public void testThomas() throws Exception{
+		String file_name="data_for_tests/loader/Thomas.zip";
+		
+		Loader loader=new Loader();
+		int n = loader.parseFile(file_name);
+		
+		assertEquals(n,12);
 	}
 	
 }
